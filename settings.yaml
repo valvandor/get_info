@@ -1,0 +1,5 @@
+default:
+  APP_KEY_FOR_OMDBAPI: ""
+
+development:
+  APP_KEY_FOR_OMDBAPI: "xxxxxxx"

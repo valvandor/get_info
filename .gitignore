@@ -1,2 +1,4 @@
 # PyCharm config
 .idea
+# Ignore dynaconf secret files
+.secrets.*
