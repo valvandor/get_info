@@ -37,4 +37,7 @@ with open(file_path, 'r') as f:
 souped_page = Soup(html, 'html.parser')
 main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
 
-print()
+link_anchor = main_content.find('a', attrs={'class': ['bloko-link']})
+vacancy_name = link_anchor.text
+
+print(vacancy_name)
