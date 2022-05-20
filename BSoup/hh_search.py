@@ -25,6 +25,21 @@ request_data = {
     'headers': headers,
 }
 
+
+def get_cash_values(raw_data) -> tuple:
+    """
+    Parse input string to tuple with 3 elements.
+    If some of this elements is not exist, define as None
+
+    Args -> str:
+        input_string: string like '100 - 10000 RUB'
+
+    Returns:
+        tuple of min salary, max salary and kind of currency
+    """
+    pass
+
+
 file_path = './page.txt'
 
 if not os.path.exists(file_path):
@@ -38,6 +53,16 @@ souped_page = Soup(html, 'html.parser')
 main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
 
 link_anchor = main_content.find('a', attrs={'class': ['bloko-link']})
+
+link_value = link_anchor['href']
 vacancy_name = link_anchor.text
 
-print(vacancy_name)
+title_anchors = main_content.findAll('h3', attrs={'class': ['bloko-header-section-3']})
+for anchor in title_anchors:
+    cash_anchor = anchor.next_sibling
+    if cash_anchor is None:
+        print('None')
+    else:
+        raw_data = cash_anchor.next_sibling.text
+        print(raw_data)
+
