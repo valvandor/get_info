@@ -28,7 +28,7 @@ request_data = {
 }
 
 
-def get_cash_values(raw_data) -> tuple:
+def get_cash_values(raw_data) -> tuple:  # FIXME: make salaries reverse and more complete (zeros)
     """
     Parse input string to tuple with 3 elements.
     If some of this elements is not exist, define as None
@@ -39,7 +39,34 @@ def get_cash_values(raw_data) -> tuple:
     Returns:
         tuple of min salary, max salary and kind of currency; None for each if empty
     """
-    return None, None, None
+    raw_data = raw_data.replace('<!-- -->', '')
+
+    sep_position = raw_data.find('–')
+    if sep_position != -1:
+        min_salary = int(''.join([raw_data[i] for i in range(sep_position, 0, -1) if raw_data[i].isdigit()]))
+        max_salary = int(''.join([raw_data[i] for i in range(sep_position, len(raw_data)) if raw_data[i].isdigit()]))
+        sep_position = raw_data.rfind(' ')
+        currency = ''.join([raw_data[i] for i in range(sep_position, len(raw_data)) if raw_data[i].isalpha()])
+        currency = currency if len(currency) > 0 else None
+
+    sep_position = raw_data.rfind(' ')
+    if sep_position != -1:
+        if raw_data.find('от') != -1:
+            min_salary = int(''.join([raw_data[i] for i in range(sep_position, 0, -1) if raw_data[i].isdigit()]))
+            max_salary = None
+        if raw_data.find('до') != -1:
+            max_salary = int(''.join([raw_data[i] for i in range(sep_position, 0, -1) if raw_data[i].isdigit()]))
+            min_salary = None
+        currency = ''.join([raw_data[i] for i in range(sep_position, len(raw_data)) if raw_data[i].isalpha()])
+        currency = currency if len(currency) > 0 else None
+    elif len(raw_data) > 0:
+        max_salary = ''.join([raw_data[i] for i in range(0, 0, -1) if raw_data[i].isdigit()])
+        max_salary = int(max_salary) if len(max_salary) > 0 else None
+        min_salary = max_salary
+        currency = None
+    else:
+        min_salary = max_salary = currency = None
+    return min_salary, max_salary, currency
 
 
 if not os.path.exists('./pages/'):
@@ -71,7 +98,7 @@ for content in anchors:
     if cash_info is None:
         min_salary, max_salary, currency = None, None, None
     else:
-        min_salary, max_salary, currency = get_cash_values(cash_info)
+        min_salary, max_salary, currency = get_cash_values(cash_info.text)
 
     try:
         city = content.find('div', attrs={'data-qa': "vacancy-serp__vacancy-address"}).text
