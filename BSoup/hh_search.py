@@ -1,4 +1,5 @@
 import os
+from pprint import pprint
 
 from bs4 import BeautifulSoup as Soup
 from helpers import get_response
@@ -14,9 +15,10 @@ params = {
     'search_field': 'name',
     'order_by': 'relevance',
     'text': 'python',
-    'items_on_page': '50',
+    'items_on_page': '20',
     'no_magic': 'true',
     'L_save_area': 'true',
+    'page': 0,
 }
 
 request_data = {
@@ -32,12 +34,12 @@ def get_cash_values(raw_data) -> tuple:
     If some of this elements is not exist, define as None
 
     Args -> str:
-        input_string: string like '100 - 10000 RUB'
+        input_string: string like '100 - 10000 RUB' or something like that
 
     Returns:
-        tuple of min salary, max salary and kind of currency
+        tuple of min salary, max salary and kind of currency; None for each if empty
     """
-    pass
+    return None, None, None
 
 
 file_path = './page.txt'
@@ -50,19 +52,36 @@ if not os.path.exists(file_path):
 with open(file_path, 'r') as f:
     html = f.read()
 souped_page = Soup(html, 'html.parser')
+
 main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
+vacancies = []
 
-link_anchor = main_content.find('a', attrs={'class': ['bloko-link']})
+anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
+for content in anchors:
+    link_anchor = content.find('a', attrs={'class': ['bloko-link']})
 
-link_value = link_anchor['href']
-vacancy_name = link_anchor.text
+    link_value = link_anchor['href']
+    vacancy_name = link_anchor.text
 
-title_anchors = main_content.findAll('h3', attrs={'class': ['bloko-header-section-3']})
-for anchor in title_anchors:
-    cash_anchor = anchor.next_sibling
-    if cash_anchor is None:
-        print('None')
+    cash_info = content.find('span', attrs={'class': ['bloko-header-section-3']})
+
+    if cash_info is None:
+        min_salary, max_salary, currency = None, None, None
     else:
-        raw_data = cash_anchor.next_sibling.text
-        print(raw_data)
+        min_salary, max_salary, currency = get_cash_values(cash_info)
 
+    try:
+        city = content.find('div', attrs={'data-qa': "vacancy-serp__vacancy-address"}).text
+    except TypeError:
+        city = None
+
+    vacancies.append({
+        'vacancy_name': vacancy_name,
+        'link': link_value,
+        'city': city,
+        'min_salary': min_salary,
+        'max_salary': max_salary,
+        'currency': currency,
+    })
+
+pprint(vacancies)
