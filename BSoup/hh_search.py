@@ -42,7 +42,10 @@ def get_cash_values(raw_data) -> tuple:
     return None, None, None
 
 
-file_path = './page.txt'
+if not os.path.exists('./pages/'):
+    os.mkdir('./pages/')
+
+file_path = './pages/page.txt'
 
 if not os.path.exists(file_path):
     response = get_response(request_data)
