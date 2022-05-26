@@ -5,5 +5,5 @@ __pycache__/
 # Ignore dynaconf secret files
 .secrets.*
 
-#BSoup downloaded files
+#HH_search downloaded files
 *.txt
