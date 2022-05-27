@@ -7,7 +7,7 @@ from pymongo.errors import DuplicateKeyError
 
 class DAOVacancy:
     """
-    Vacancy data access object
+    This service is exclusive for Vacancies
     """
     def __init__(self, collection: Collection):
         self.vacancies_collection = collection
@@ -17,7 +17,15 @@ class DAOVacancy:
         Add vacancies to collection
 
         Args:
-            data: inserted data with at least one item
+            data: inserted data with at least one item, which should be like: {
+                '_id': 'id',
+                'vacancy_name': 'some vacancy name',
+                'link': 'correct link',
+                'city': 'any city',
+                'min_salary': 'lower salary limit',
+                'max_salary': 'upper salary limit',
+                'currency': 'currency'
+            }
         Returns:
             None
         Raises:
@@ -27,4 +35,4 @@ class DAOVacancy:
             try:
                 self.vacancies_collection.insert_one(vacancy)
             except DuplicateKeyError:
-                print('There was a problem with {} with index {} of inserted_list'.format(vacancy, i))
+                print('There was a problem at index {} of inserted list with {}'.format(i, vacancy))
