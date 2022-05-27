@@ -9,3 +9,5 @@ __pycache__/
 *.txt
 # saved vacancies
 *vacancies.json
+# saved searched text
+*text.json
