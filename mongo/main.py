@@ -4,8 +4,7 @@ from mongo.const import DIR_DATA
 from mongo.db import client, get_collection
 from mongo.dao_vacancy import DAOVacancy
 from mongo.helpers import load_from_file
-from HH_search import const
-from HH_search.main import main
+import const
 
 
 # if __name__ == '__main__':
