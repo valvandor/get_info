@@ -4,11 +4,11 @@ import requests
 from requests import ConnectionError
 
 
-def get_response(request_data) -> str or None:
+def get_response(request_data: dict) -> str or None:
     """
     Makes request to the URL using headers and params
 
-    Args -> dict:
+    Args:
         request_data: dict with data for request
     Returns -> str or None:
         response from URL
