@@ -1,0 +1,2 @@
+
+DIR_DATA = '../data/'

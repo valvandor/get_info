@@ -3,8 +3,8 @@ import uuid
 
 from bs4 import BeautifulSoup as Soup
 
-from hh_consts import request_data
-from helpers import get_response, get_cash_values, make_cache_dir
+from HH_search.hh_consts import request_data
+from HH_search.helpers import get_response, get_cash_values, make_cache_dir
 
 
 def parse_hh_vacancy(anchors):
