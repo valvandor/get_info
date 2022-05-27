@@ -1,4 +1,5 @@
 import os
+import uuid
 
 from bs4 import BeautifulSoup as Soup
 
@@ -26,6 +27,7 @@ def parse_hh_vacancy(anchors):
             city = None
 
         vacancies.append({
+            'id_': str(uuid.uuid4()),
             'vacancy_name': vacancy_name,
             'link': link_value,
             'city': city,
