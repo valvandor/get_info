@@ -4,7 +4,7 @@ import uuid
 from bs4 import BeautifulSoup as Soup
 
 from hh_consts import request_data
-from helpers import get_response, get_cash_values
+from helpers import get_response, get_cash_values, make_cache_dir
 
 
 def parse_hh_vacancy(anchors):
@@ -39,21 +39,22 @@ def parse_hh_vacancy(anchors):
     return vacancies
 
 
-def make_fully_hh_search_by_word(keyword, folder_name='pages') -> list:
-    if not os.path.exists(f'./{folder_name}/'):
-        os.mkdir(f'./{folder_name}/')
+def make_fully_hh_search(keyword, folder_name='pages') -> list:
+
+    dir_with_pages = make_cache_dir(keyword, folder_name)
+
     request_data['params']['text'] = keyword
     vacancies = []
     i = 0
     while True:
-        file_path = f'./{folder_name}/page_{i + 1}.txt'
+        file_path = f'./{dir_with_pages}/page_{i + 1}.txt'
         if i != 0:
             request_data['params']['page'] = str(i)
 
         if not os.path.exists(file_path):
             response = get_response(request_data)
             if response.status_code == 404:
-                os.remove(f'./{folder_name}/page_{i + 1}.txt')
+                os.remove(f'./{dir_with_pages}/page_{i + 1}.txt')
                 break
             with open(file_path, 'w', encoding='UTF-8') as f:
                 f.write(response.text)

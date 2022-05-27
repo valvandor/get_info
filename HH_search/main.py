@@ -1,16 +1,29 @@
 import json
+import os
 
-from hh_search import make_fully_hh_search_by_word
+from HH_search import const
+from hh_search import make_fully_hh_search
 
-search_word = 'python'
+searching_for = 'python'
 
-file_path = f'{search_word}_vacancies.json'
 
-with open(file_path, 'w', encoding='utf-8') as file:
-    json.dump(
-        make_fully_hh_search_by_word(search_word), file)
+def main(text):
+    if not os.path.exists(f'{const.ROOT_DIRECTORY}{const.DATA_DIRECTORY}'):
+        os.mkdir(f'{const.ROOT_DIRECTORY}{const.DATA_DIRECTORY}')
 
-answer = input('\nРаспечатать количество полученных вакансий? (press Enter to deny): ')
-if answer:
-    with open(file_path, 'r') as file:
-        print(len(json.load(file)))
+    text = text.strip()
+    searched = text.replace(' ', '_')
+
+    file_path = f'{const.ROOT_DIRECTORY}{const.DATA_DIRECTORY}{searched}{const.FILE_EXTENSION}'
+    with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(
+            make_fully_hh_search(text), file)
+
+    answer = input('\nРаспечатать количество полученных вакансий? (press Enter to deny): ')
+    if answer:
+        with open(file_path, 'r') as file:
+            print(len(json.load(file)))
+
+
+if __name__ == '__main__':
+    main(searching_for)

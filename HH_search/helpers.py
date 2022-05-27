@@ -1,3 +1,5 @@
+import os
+
 import requests
 from requests import ConnectionError
 
@@ -61,3 +63,12 @@ def get_cash_values(raw_data) -> tuple:
         else:
             min_salary = max_salary = currency = None
     return min_salary, max_salary, currency
+
+
+def make_cache_dir(keyword, folder_name):
+    if not os.path.exists('./cache/'):
+        os.mkdir('./cache/')
+    dir_with_pages = f'./cache/"{keyword}" {folder_name}/'
+    if not os.path.exists(dir_with_pages):
+        os.mkdir(dir_with_pages)
+    return dir_with_pages
