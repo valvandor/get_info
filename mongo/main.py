@@ -1,4 +1,4 @@
-from connector import vacancies_connector
+from db import vacancies_connector
 from dao_vacancy import DAOVacancy
 from helpers import load_from_file
 
