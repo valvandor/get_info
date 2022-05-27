@@ -42,7 +42,7 @@ def parse_hh_vacancy(anchors):
 def make_fully_hh_search_by_word(keyword, folder_name='pages') -> list:
     if not os.path.exists(f'./{folder_name}/'):
         os.mkdir(f'./{folder_name}/')
-    request_data['params']['page'] = keyword
+    request_data['params']['text'] = keyword
     vacancies = []
     i = 0
     while True:
