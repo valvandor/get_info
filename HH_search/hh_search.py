@@ -72,4 +72,3 @@ def make_fully_hh_search_by_word(keyword, folder_name='pages') -> list:
         i += 1
         print('.', end='')
     return vacancies
-
