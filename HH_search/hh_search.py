@@ -70,5 +70,6 @@ def make_fully_hh_search_by_word(keyword, folder_name='pages') -> list:
         if souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None:
             break
         i += 1
+        print('.', end='')
     return vacancies
 
