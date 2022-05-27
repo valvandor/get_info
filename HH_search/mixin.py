@@ -2,8 +2,12 @@ import uuid
 
 
 class ParseMixin:
+    def _get_vacancies_on_page(self, souped_page):
+        main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
+        vacancy_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
+        return self.__parse_hh_vacancy(vacancy_anchors)
 
-    def parse_hh_vacancy(self, anchors):
+    def __parse_hh_vacancy(self, anchors):
         vacancies = []
 
         for content in anchors:
