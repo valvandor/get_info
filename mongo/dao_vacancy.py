@@ -1,8 +1,6 @@
 """
 This module provide for Vacancy object model
 """
-import uuid
-
 from pymongo.collection import Collection
 from pymongo.errors import DuplicateKeyError
 
