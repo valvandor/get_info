@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from bs4 import BeautifulSoup as Soup
+from typing import List
 
 
 class HeadHunterParseMixin:
@@ -15,7 +16,7 @@ class HeadHunterParseMixin:
         """
         return souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None
 
-    def _get_vacancies_on_page(self, souped_page: Soup) -> list[dict]:
+    def _get_vacancies_on_page(self, souped_page: Soup) -> List[dict]:
         """
         Parses vacancies on page to separate containers
 

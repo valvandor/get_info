@@ -3,6 +3,7 @@ import os
 import requests
 from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup as Soup
+from typing import List
 
 from helpers import make_cache_dir
 from HH_search.mixin import HeadHunterParseMixin
@@ -72,7 +73,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             'headers': headers,
         }
 
-    def make_fully_hh_search(self, searched_text: str, folder_name: str = 'pages') -> list[dict]:
+    def make_fully_hh_search(self, searched_text: str, folder_name: str = 'pages') -> List[dict]:
         """
         Parse and store data in json files with buffering
         Args:

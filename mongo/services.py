@@ -21,7 +21,7 @@ class MongoAccessVacanciesService:
         self.collection_name = collection_name
         return Collection(self.vacancy_db, collection_name)
 
-    def insert(self, data: list, collection):
+    def insert(self, data: list, collection: Collection):
         """
         Add vacancies to collection
 
@@ -40,6 +40,7 @@ class MongoAccessVacanciesService:
             None
         Raises:
             DuplicateKeyError: if repeated id
+            ServerSelectionTimeoutError: if no active client
         """
         print(f'Loading data to {self.vacancy_db} in collection {self.collection_name}', end='')
         for i, vacancy in enumerate(data):
