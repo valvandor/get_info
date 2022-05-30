@@ -1,4 +1,4 @@
-import uuid
+from uuid import uuid4
 
 from bs4 import BeautifulSoup as Soup
 
@@ -25,47 +25,43 @@ class HeadHunterParseMixin:
             list with described vacancies
         """
         main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
-        vacancy_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
-        return self.__parse_hh_vacancy(vacancy_anchors)
+        vacancies_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
+        return [self.__parse_hh_vacancy(anchor) for anchor in vacancies_anchors]
 
-    def __parse_hh_vacancy(self, anchors: list[Soup]) -> list[dict]:
+    def __parse_hh_vacancy(self, anchor: Soup) -> dict:
         """
         Parses values for selected fields: vacancy name, link, city, min/max salary and currency
         Args:
-            anchors: list of souped objects represented vacancies containers
+            anchor: list of souped objects represented vacancies containers
         Raise:
             TypeError if city is not define
         Returns:
             list with described vacancy
         """
-        vacancies = []
+        link_anchor = anchor.find('a', attrs={'class': ['bloko-link']})
+        link_value = link_anchor['href']
+        vacancy_name = link_anchor.text
 
-        for content in anchors:
-            link_anchor = content.find('a', attrs={'class': ['bloko-link']})
-            link_value = link_anchor['href']
-            vacancy_name = link_anchor.text
+        cash_info = anchor.find('span', attrs={'class': ['bloko-header-section-3']})
+        if cash_info is None:
+            min_salary, max_salary, currency = None, None, None
+        else:
+            min_salary, max_salary, currency = self.__get_cash_values(cash_info.text)
 
-            cash_info = content.find('span', attrs={'class': ['bloko-header-section-3']})
-            if cash_info is None:
-                min_salary, max_salary, currency = None, None, None
-            else:
-                min_salary, max_salary, currency = self.__get_cash_values(cash_info.text)
+        try:
+            city = anchor.find('div', attrs={'data-qa': "vacancy-serp__vacancy-address"}).text
+        except TypeError:
+            city = None
 
-            try:
-                city = content.find('div', attrs={'data-qa': "vacancy-serp__vacancy-address"}).text
-            except TypeError:
-                city = None
-
-            vacancies.append({
-                '_id': str(uuid.uuid4()),
-                'vacancy_name': vacancy_name,
-                'link': link_value,
-                'city': city,
-                'min_salary': min_salary,
-                'max_salary': max_salary,
-                'currency': currency,
-            })
-        return vacancies
+        return {
+            '_id': str(uuid4()),
+            'vacancy_name': vacancy_name,
+            'link': link_value,
+            'city': city,
+            'min_salary': min_salary,
+            'max_salary': max_salary,
+            'currency': currency,
+        }
 
     @staticmethod
     def __get_cash_values(raw_data) -> tuple:
