@@ -25,11 +25,11 @@ def make_cache_dir(keyword, folder_name):
     return dir_with_pages
 
 
-def remove_cache_dir(keyword: str, folder_name='pages'):
+def remove_cache_dir(prefix: str, folder_name: str):
     """
     Remove directories with storing loaded pages
     """
-    dir_with_pages = f'{const.ROOT_DIRECTORY}{const.CACHE_DIR_NAME}"{keyword}" {folder_name}/'
+    dir_with_pages = f'{const.ROOT_DIRECTORY}{const.CACHE_DIR_NAME}"{prefix}" {folder_name}/'
     if os.path.exists(dir_with_pages):
         shutil.rmtree(dir_with_pages, ignore_errors=True)
 
@@ -42,3 +42,18 @@ def get_searched_word():
     except OSError:
         return
     return search_text
+
+
+def write_to_json_file(data, file_path: str):
+    """
+    Writes to file via encoding utf-8
+
+    Args:
+        data: which to save, must be json-format
+        file_path: where to save, must be existed
+
+    Returns:
+        None
+    """
+    with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(data, file)

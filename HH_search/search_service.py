@@ -5,7 +5,8 @@ from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup as Soup
 from typing import List
 
-from helpers import make_cache_dir
+import const
+from helpers import make_cache_dir, remove_cache_dir, write_to_json_file
 from HH_search.mixin import HeadHunterParseMixin
 
 
@@ -78,6 +79,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             'headers': headers,
         }
         self.__searched_text = None
+        self.__json_file_prefix = None
 
     @staticmethod
     def _alert_starting_searching():
@@ -94,10 +96,11 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             list with vacancies
         """
         self.__searched_text = searched_text
+        self.__json_file_prefix = searched_text.replace(' ', '_')
         self._alert_starting_searching()
-        dir_with_pages = make_cache_dir(searched_text, folder_name)
-
         self._params['text'] = searched_text
+
+        dir_with_pages = make_cache_dir(searched_text, folder_name)
         vacancies = []
         i = 0
         while True:
@@ -115,12 +118,18 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
                 print()
                 break
             i += 1
-
             self.__imitate_loading()
+
         if not vacancies:
+            remove_cache_dir(self.__searched_text, folder_name)
             self._alert_nothing_found()
             return
 
+        json_file_path = f'{const.ROOT_DIRECTORY}{const.DATA_DIRECTORY}{self.__json_file_prefix}{const.FILE_EXTENSION}'
+        write_to_json_file(vacancies, json_file_path)
+
+        last_searched_text_file = f'{const.ROOT_DIRECTORY}{const.DATA_DIRECTORY}{const.FILE_LAST_SEARCHED_TEXT}'
+        write_to_json_file({const.SEARCHED_TEXT: searched_text}, last_searched_text_file)
         return vacancies
 
     def _alert_nothing_found(self):
