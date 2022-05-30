@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup as Soup
 from typing import List
 
 import const
-from helpers import make_cache_dir, remove_cache_dir, write_to_json_file
+from helpers import make_cache_dir, remove_cache_dir, write_to_json_file, make_data_directory
 from HH_search.mixin import HeadHunterParseMixin
 
 
@@ -100,6 +100,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
         self._alert_starting_searching()
         self._params['text'] = searched_text
 
+        make_data_directory()
         dir_with_pages = make_cache_dir(searched_text, folder_name)
         vacancies = []
         i = 0
@@ -107,7 +108,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             if i != 0:
                 self.__request_data['params']['page'] = str(i)
 
-            file_path = f'./{dir_with_pages}/page_{i + 1}.txt'
+            file_path = f'{dir_with_pages}/page_{i + 1}.txt'
             souped_page = self._get_souped_page(self.__request_data, file_path)
             if not souped_page:
                 break

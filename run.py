@@ -8,8 +8,6 @@ from mongo.db import client
 def main():
     searched_text = input('Input searched text: ')
 
-    make_data_directory()
-
     text = searched_text.strip()
     file_prefix_name = text.replace(' ', '_')
 
