@@ -98,4 +98,3 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
     @staticmethod
     def __imitate_loading():
         print('.', end='')
-
