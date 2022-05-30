@@ -5,7 +5,7 @@ from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup as Soup
 
 from HH_search.helpers import make_cache_dir
-from HH_search.mixin import ParseMixin
+from HH_search.mixin import HeadHunterParseMixin
 
 
 class BaseSearch:
@@ -60,7 +60,7 @@ class BaseSearch:
         return Soup(html, 'html.parser')
 
 
-class HeadHunterSearch(ParseMixin, BaseSearch):
+class HeadHunterSearch(HeadHunterParseMixin, BaseSearch):
     """
     This class exclusively for headhunter
     """

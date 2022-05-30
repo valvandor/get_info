@@ -1,7 +1,10 @@
 import uuid
 
 
-class ParseMixin:
+class HeadHunterParseMixin:
+    """
+    This class provides handy methods for HeadHunter Service
+    """
     def _get_vacancies_on_page(self, souped_page):
         main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
         vacancy_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
