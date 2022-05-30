@@ -1,16 +1,43 @@
 import uuid
 
+from bs4 import BeautifulSoup as Soup
+
 
 class HeadHunterParseMixin:
     """
     This class provides handy methods for HeadHunter Service
     """
-    def _get_vacancies_on_page(self, souped_page):
+
+    @staticmethod
+    def _is_last_page(souped_page: Soup) -> bool:
+        """
+        Checks if the page is the latest
+        """
+        return souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None
+
+    def _get_vacancies_on_page(self, souped_page: Soup) -> list[dict]:
+        """
+        Parses vacancies on page to separate containers
+        Args:
+            souped_page: parsing page
+
+        Returns:
+            list with described vacancies
+        """
         main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
         vacancy_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
         return self.__parse_hh_vacancy(vacancy_anchors)
 
-    def __parse_hh_vacancy(self, anchors):
+    def __parse_hh_vacancy(self, anchors: list[Soup]) -> list[dict]:
+        """
+        Parses values for selected fields: vacancy name, link, city, min/max salary and currency
+        Args:
+            anchors: list of souped objects represented vacancies containers
+        Raise:
+            TypeError if city is not define
+        Returns:
+            list with described vacancy
+        """
         vacancies = []
 
         for content in anchors:
