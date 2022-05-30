@@ -4,7 +4,7 @@ import requests
 from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup as Soup
 
-from HH_search.helpers import make_cache_dir
+from helpers import make_cache_dir
 from HH_search.mixin import HeadHunterParseMixin
 
 

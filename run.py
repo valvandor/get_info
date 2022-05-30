@@ -1,7 +1,7 @@
 import json
 
 import const
-from HH_search.helpers import make_data_directory
+from helpers import make_data_directory
 from HH_search.search_service import HeadHunterSearchService
 from HH_search.request_consts import URL, HEADERS, PARAMS
 

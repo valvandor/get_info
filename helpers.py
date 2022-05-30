@@ -1,3 +1,4 @@
+import json
 import os
 
 import const
@@ -21,3 +22,13 @@ def make_cache_dir(keyword, folder_name):
     if not os.path.exists(dir_with_pages):
         os.mkdir(dir_with_pages)
     return dir_with_pages
+
+
+def get_searched_word():
+    try:
+        with open(f'{const.ROOT_DIRECTORY}{const.DATA_DIRECTORY}{const.FILE_LAST_SEARCHED_TEXT}', 'r') as file:
+            data = (json.load(file))
+            search_text = data[const.SEARCHED_TEXT]
+    except OSError:
+        return
+    return search_text
