@@ -1,2 +1,0 @@
-
-DIR_DATA = '../data/'

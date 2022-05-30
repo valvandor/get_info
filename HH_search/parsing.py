@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from bs4 import BeautifulSoup as Soup
+from typing import List
 
 
 class HeadHunterParseMixin:
@@ -15,11 +16,11 @@ class HeadHunterParseMixin:
         """
         return souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None
 
-    def _get_vacancies_on_page(self, souped_page: Soup) -> list[dict]:
+    def _get_vacancies_on_page(self, souped_page: Soup) -> List[dict]:
         """
         Parses vacancies on page to separate containers
-        Args:
-            souped_page: parsing page
+
+        Params: souped_page — parsing page
 
         Returns:
             list with described vacancies
@@ -31,8 +32,8 @@ class HeadHunterParseMixin:
     def __parse_hh_vacancy(self, anchor: Soup) -> dict:
         """
         Parses values for selected fields: vacancy name, link, city, min/max salary and currency
-        Args:
-            anchor: list of souped objects represented vacancies containers
+        Params:
+            anchor — souped object represented vacancies container
         Raise:
             TypeError if city is not define
         Returns:
@@ -69,8 +70,8 @@ class HeadHunterParseMixin:
         Parse input string to tuple with 3 elements.
         If some of this elements is not exist, define as None
 
-        Args -> str:
-            input_string: string like '100 - 10000 RUB' or something like that
+        Params:
+            input_string — string like '100 - 10000 RUB' or something like that
 
         Returns:
             tuple of min salary, max salary and kind of currency; None for each if empty
