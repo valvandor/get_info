@@ -19,7 +19,7 @@ class BaseSearch:
         """
         Makes request to the URL using headers and params
 
-        Args:
+        Params:
             request_data — dict with data for request
         Returns:
             response from URL
@@ -43,7 +43,7 @@ class BaseSearch:
         Makes request if no storing file by current url and store it.
         After that, reads data from storing file and makes it into souped page
 
-        Args
+        Params:
             file_path — path to file, which should be loaded or where to save
             request_data — dict with data for requesting with keys url, headers and params
 
@@ -88,10 +88,10 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
     def make_fully_hh_search(self, searched_text: str, folder_name: str = 'pages') -> List[dict] or None:
         """
         Parse and store data in json files with buffering
-        Args:
-            searched_text: searched text, which should be in vacancies names
-            folder_name: suffix for directory name, default pages
 
+        Params:
+            searched_text — searched text, which should be in vacancies names
+            folder_name — suffix for directory name, default pages
         Returns:
             list with vacancies
         """
