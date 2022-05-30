@@ -32,21 +32,17 @@ class BaseSearch:
             return
         return response
 
-    def _get_souped_page(self, request_data: dict, file_path: str, i: int) -> Soup or None:
+    def _get_souped_page(self, request_data: dict, file_path: str) -> Soup or None:
         """
         Makes request if no storing file by current url and store it.
         After that, reads data from storing file and makes it into souped page
 
         Args:
             file_path: path to file, which should be loaded or where to save
-            i: increment, which will put to next page by param
             request_data: dict with data for requesting with keys url, headers and params
 
         Returns None if response status code 404 else BeautifulSoup object
         """
-        if i != 0:
-            request_data['params']['page'] = str(i)
-
         if not os.path.exists(file_path):
             response = self.get_response(request_data)
             if not response.status_code:
@@ -60,7 +56,7 @@ class BaseSearch:
         return Soup(html, 'html.parser')
 
 
-class HeadHunterSearch(HeadHunterParseMixin, BaseSearch):
+class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
     """
     This class exclusively for headhunter
     """
@@ -82,8 +78,11 @@ class HeadHunterSearch(HeadHunterParseMixin, BaseSearch):
         vacancies = []
         i = 0
         while True:
+            if i != 0:
+                self.__request_data['params']['page'] = str(i)
+
             file_path = f'./{dir_with_pages}/page_{i + 1}.txt'
-            souped_page = self._get_souped_page(self.__request_data, file_path, i)
+            souped_page = self._get_souped_page(self.__request_data, file_path)
             if not souped_page:
                 break
 
