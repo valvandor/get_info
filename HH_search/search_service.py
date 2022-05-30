@@ -33,6 +33,10 @@ class BaseSearch:
             return
         return response
 
+    @staticmethod
+    def _alert_not_found():
+        print('\nPage not found')
+
     def _get_souped_page(self, request_data: dict, file_path: str) -> Soup or None:
         """
         Makes request if no storing file by current url and store it.
@@ -49,6 +53,7 @@ class BaseSearch:
             response = self.get_response(request_data)
             if not response.status_code:
                 os.remove(file_path)
+                self._alert_not_found()
                 return
             with open(file_path, 'w', encoding='UTF-8') as f:
                 f.write(response.text)
@@ -72,8 +77,13 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             'params': params,
             'headers': headers,
         }
+        self.__searched_text = None
 
-    def make_fully_hh_search(self, searched_text: str, folder_name: str = 'pages') -> List[dict]:
+    @staticmethod
+    def _alert_starting_searching():
+        print('Parsing and storing', end='')
+
+    def make_fully_hh_search(self, searched_text: str, folder_name: str = 'pages') -> List[dict] or None:
         """
         Parse and store data in json files with buffering
         Args:
@@ -83,6 +93,8 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
         Returns:
             list with vacancies
         """
+        self.__searched_text = searched_text
+        self._alert_starting_searching()
         dir_with_pages = make_cache_dir(searched_text, folder_name)
 
         self._params['text'] = searched_text
@@ -105,7 +117,14 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             i += 1
 
             self.__imitate_loading()
+        if not vacancies:
+            self._alert_nothing_found()
+            return
+
         return vacancies
+
+    def _alert_nothing_found(self):
+        print(f'There are no vacancies for the searched text "{self.__searched_text}"')
 
     @staticmethod
     def __imitate_loading():

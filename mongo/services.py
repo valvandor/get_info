@@ -42,13 +42,14 @@ class MongoAccessVacanciesService:
             DuplicateKeyError: if repeated id
             ServerSelectionTimeoutError: if no active client
         """
-        print(f'Loading data to {self.vacancy_db} in collection {self.collection_name}', end='')
+        print(f'Loading data to database {self.vacancy_db.name} in collection {self.collection_name}', end='')
         for i, vacancy in enumerate(data):
             try:
                 collection.insert_one(vacancy)
-                print('.', end='')
+                if not i % 20:
+                    print('.', end='')
             except DuplicateKeyError:
-                print('There was a problem at index {} of inserted list with {}'.format(i, vacancy))
+                print('\nThere was a problem at index {} of inserted list with {}'.format(i, vacancy), end='')
             except ServerSelectionTimeoutError:
-                print('Check your mongo client')
+                print('\nCheck your mongo client')
                 break
