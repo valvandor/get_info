@@ -5,7 +5,7 @@ from pymongo.database import Database
 client = MongoClient('mongodb://localhost:27017/')
 
 
-def get_collection(collection_name: str, database: Database):
+def use_collection(collection_name: str, database: Database):
     """
     Makes collection in selected database if it's not exist and select it
     """

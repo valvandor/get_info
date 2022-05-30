@@ -1,7 +1,7 @@
 import json
 
 from mongo.const import DIR_DATA
-from mongo.db import client, get_collection
+from mongo.db import client, use_collection
 from mongo.dao_vacancy import DAOVacancy
 from mongo.helpers import load_from_file
 import const
@@ -21,7 +21,7 @@ def get_searched_word():
 search_text = get_searched_word()
 
 vacancies_db = client.vacancies
-python_vacancies_collection = get_collection(f'{search_text}_vacancies', vacancies_db)
+python_vacancies_collection = use_collection(f'{search_text}_vacancies', vacancies_db)
 python_vacancies_service = DAOVacancy(python_vacancies_collection)
 
 file_path = f'{DIR_DATA}{search_text}_vacancies.json'
