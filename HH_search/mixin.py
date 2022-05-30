@@ -18,8 +18,8 @@ class HeadHunterParseMixin:
     def _get_vacancies_on_page(self, souped_page: Soup) -> list[dict]:
         """
         Parses vacancies on page to separate containers
-        Args:
-            souped_page: parsing page
+
+        Args: souped_page — parsing page
 
         Returns:
             list with described vacancies

@@ -18,8 +18,8 @@ class BaseSearch:
         Makes request to the URL using headers and params
 
         Args:
-            request_data: dict with data for request
-        Returns -> str or None:
+            request_data — dict with data for request
+        Returns:
             response from URL
         Raises:
             ConnectionError: if no connection to internet
@@ -37,11 +37,12 @@ class BaseSearch:
         Makes request if no storing file by current url and store it.
         After that, reads data from storing file and makes it into souped page
 
-        Args:
-            file_path: path to file, which should be loaded or where to save
-            request_data: dict with data for requesting with keys url, headers and params
+        Args
+            file_path — path to file, which should be loaded or where to save
+            request_data — dict with data for requesting with keys url, headers and params
 
-        Returns None if response status code 404 else BeautifulSoup object
+        Returns:
+            None if response status code 404 else BeautifulSoup object
         """
         if not os.path.exists(file_path):
             response = self.get_response(request_data)
@@ -71,10 +72,19 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             'headers': headers,
         }
 
-    def make_fully_hh_search(self, search_word, folder_name='pages') -> list:
-        dir_with_pages = make_cache_dir(search_word, folder_name)
+    def make_fully_hh_search(self, searched_text: str, folder_name: str = 'pages') -> list[dict]:
+        """
+        Parse and store data in json files with buffering
+        Args:
+            searched_text: searched text, which should be in vacancies names
+            folder_name: suffix for directory name, default pages
 
-        self._params['text'] = search_word
+        Returns:
+            list with vacancies
+        """
+        dir_with_pages = make_cache_dir(searched_text, folder_name)
+
+        self._params['text'] = searched_text
         vacancies = []
         i = 0
         while True:
@@ -89,6 +99,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             vacancies += self._get_vacancies_on_page(souped_page)
 
             if souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None:
+                print()
                 break
             i += 1
 
