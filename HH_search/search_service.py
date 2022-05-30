@@ -5,9 +5,8 @@ from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup as Soup
 from typing import List
 
-import const
-from helpers import make_cache_dir, remove_cache_dir, write_to_json_file, make_data_directory
-from HH_search.mixin import HeadHunterParseMixin
+from HH_search.parsing import HeadHunterParseMixin
+from HH_search.storing_files import StoringFilesService
 
 
 class BaseSearch:
@@ -64,12 +63,12 @@ class BaseSearch:
         return Soup(html, 'html.parser')
 
 
-class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
+class HeadHunterSearchService(HeadHunterParseMixin, StoringFilesService, BaseSearch):
     """
     This class exclusively for headhunter
     """
-
     def __init__(self, url, headers, params):
+        super().__init__()
         self.__url = url,
         self.__headers = headers,
         self._params = params
@@ -100,8 +99,8 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
         self._alert_starting_searching()
         self._params['text'] = searched_text
 
-        make_data_directory()
-        dir_with_pages = make_cache_dir(searched_text, folder_name)
+        self.make_data_directory()
+        dir_with_pages = self.make_cache_dir(searched_text, folder_name)
         vacancies = []
         i = 0
         while True:
@@ -122,15 +121,13 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSearch):
             self.__imitate_loading()
 
         if not vacancies:
-            remove_cache_dir(self.__searched_text, folder_name)
+            self.remove_cache_dir(self.__searched_text, folder_name)
             self._alert_nothing_found()
             return
 
-        json_file_path = f'{const.ROOT_DIRECTORY}{const.DATA_DIRECTORY}{self.__json_file_prefix}{const.FILE_EXTENSION}'
-        write_to_json_file(vacancies, json_file_path)
+        self.create_json_file(vacancies, self.__json_file_prefix)
+        self.update_last_searched_text(searched_text)
 
-        last_searched_text_file = f'{const.ROOT_DIRECTORY}{const.DATA_DIRECTORY}{const.FILE_LAST_SEARCHED_TEXT}'
-        write_to_json_file({const.SEARCHED_TEXT: searched_text}, last_searched_text_file)
         return vacancies
 
     def _alert_nothing_found(self):
