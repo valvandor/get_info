@@ -3,6 +3,8 @@ from uuid import uuid4
 from bs4 import BeautifulSoup as Soup
 from typing import List
 
+from const import STORING_CONST
+
 
 class HeadHunterParseMixin:
     """
@@ -55,13 +57,13 @@ class HeadHunterParseMixin:
             city = None
 
         return {
-            '_id': str(uuid4()),
-            'vacancy_name': vacancy_name,
-            'link': link_value,
-            'city': city,
-            'min_salary': min_salary,
-            'max_salary': max_salary,
-            'currency': currency,
+            STORING_CONST['id']: str(uuid4()),
+            STORING_CONST['vacancy_name']: vacancy_name,
+            STORING_CONST['link']: link_value,
+            STORING_CONST['city']: city,
+            STORING_CONST['min_salary']: min_salary,
+            STORING_CONST['max_salary']: max_salary,
+            STORING_CONST['currency']: currency,
         }
 
     @staticmethod
