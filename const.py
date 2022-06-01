@@ -7,7 +7,7 @@ FILE_PATHS_CONST = {
     'data_directory': 'data/',
     'cache_directory': 'cache/',
     'json_file_suffix': '_vacancies.json',
-    'key_for_last': 'searched_text',
+    'searched_text_key': 'searched_text',
     'file_containing_last': 'last_searched_text.json',
 }
 

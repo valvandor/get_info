@@ -14,7 +14,7 @@ class StoringFilesService:
         self._data_dir = FILE_PATHS_CONST['data_directory']
         self._cache_dir = FILE_PATHS_CONST['cache_directory']
         self._json_file_suffix = FILE_PATHS_CONST['json_file_suffix']
-        self._key_for_last = FILE_PATHS_CONST['key_for_last']
+        self._searched_text_key = FILE_PATHS_CONST['searched_text_key']
         self._file_containing_last = FILE_PATHS_CONST['file_containing_last']
 
     def get_path_to_json_file(self, prefix):
@@ -29,7 +29,7 @@ class StoringFilesService:
 
     def update_last_searched_text(self, searched_text):
         last_searched_text_file = self.get_path_to_file_containing_last()
-        self._write_to_json_file({self._key_for_last: searched_text}, last_searched_text_file)
+        self._write_to_json_file({self._searched_text_key: searched_text}, last_searched_text_file)
 
     def make_data_directory(self):
         """
@@ -57,14 +57,19 @@ class StoringFilesService:
         if os.path.exists(dir_with_pages):
             shutil.rmtree(dir_with_pages, ignore_errors=True)
 
-    def get_last_searched_text(self):
+    def get_last_searched_text(self) -> dict:
+        """
+        Returns last searched text
+
+        Raises:
+            OSError
+        """
         try:
             with open(f'{self._root_dir}{self._data_dir}{self._file_containing_last}', 'r') as file:
-                data = (json.load(file))
-                search_text = data[self.__searched_text]
+                data = json.load(file)
         except OSError:
             return
-        return search_text
+        return data
 
     @staticmethod
     def _write_to_json_file(data, file_path: str):

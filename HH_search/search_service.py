@@ -69,20 +69,11 @@ class HeadHunterSearchService(HeadHunterParseMixin, StoringFilesService, BaseSea
     """
     def __init__(self, url, headers, params):
         super().__init__()
-        self.__url = url,
-        self.__headers = headers,
-        self._params = params
         self.__request_data = {
             'url': url,
             'params': params,
             'headers': headers,
         }
-        self.__searched_text = None
-        self.__json_file_prefix = None
-
-    @staticmethod
-    def _alert_starting_searching():
-        print('Parsing and storing', end='')
 
     def make_fully_hh_search(self, searched_text: str, folder_name: str = 'pages') -> List[dict] or None:
         """
@@ -94,10 +85,8 @@ class HeadHunterSearchService(HeadHunterParseMixin, StoringFilesService, BaseSea
         Returns:
             list with vacancies
         """
-        self.__searched_text = searched_text
-        self.__json_file_prefix = searched_text.replace(' ', '_')
-        self._alert_starting_searching()
-        self._params['text'] = searched_text
+        print('Parsing and storing', end='')
+        self.__request_data['params']['text'] = searched_text
 
         self.make_data_directory()
         dir_with_pages = self.make_cache_dir(searched_text, folder_name)
@@ -121,17 +110,14 @@ class HeadHunterSearchService(HeadHunterParseMixin, StoringFilesService, BaseSea
             self.__imitate_loading()
 
         if not vacancies:
-            self.remove_cache_dir(self.__searched_text, folder_name)
-            self._alert_nothing_found()
+            self.remove_cache_dir(searched_text, folder_name)
+            print(f'There are no vacancies for the searched text "{searched_text}"')
             return
 
-        self.create_json_file(vacancies, self.__json_file_prefix)
+        self.create_json_file(vacancies, searched_text.replace(' ', '_'))
         self.update_last_searched_text(searched_text)
 
         return vacancies
-
-    def _alert_nothing_found(self):
-        print(f'There are no vacancies for the searched text "{self.__searched_text}"')
 
     @staticmethod
     def __imitate_loading():
