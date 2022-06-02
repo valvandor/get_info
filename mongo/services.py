@@ -46,3 +46,24 @@ class MongoAccessVacanciesService(MongoAccessDefaultService):
             except ServerSelectionTimeoutError:
                 print('\nCheck your mongo client')
                 break
+
+
+class MongoAccessSearchedTextService(MongoAccessDefaultService):
+    """
+    This service is exclusive for collection stored searched texts
+    """
+    def __init__(self, collection_name):
+        super().__init__(collection_name)
+        self.db_name = self.get_db_name()
+        self.collection = self.get_collection()
+
+    def insert(self, item: dict):
+        """
+        Insert into collection new searched text
+
+        Args:
+            item: searched text, should be like: {
+                'searched_text': 'something'
+            }
+        """
+        self.collection.insert_one(item)

@@ -22,3 +22,4 @@ STORING_CONST = {
 }
 
 DB_NAME = 'vacancies_searching'
+SEARCHED_COLLECTION = 'collection_searched_text'
