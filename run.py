@@ -17,6 +17,7 @@ def main():
 
     if vacancies_list:
         searched_text_collection = MongoAccessSearchedTextService(const.SEARCHED_COLLECTION)
+        searched_text_collection.add_index(const.FILE_PATHS_CONST['searched_text_key'])
         searched_text_collection.insert(searched_text)
 
         vacancies_collection = MongoAccessVacanciesService(f'collection_{file_prefix_name}_vacancies')

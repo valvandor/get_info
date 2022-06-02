@@ -15,3 +15,6 @@ class MongoAccessDefaultService:
 
     def get_collection(self):
         return self._collection
+
+    def add_index(self, field):
+        self._collection.create_index(field, unique=True)

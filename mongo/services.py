@@ -3,6 +3,7 @@ This module provide for Vacancy object model
 """
 from pymongo.errors import DuplicateKeyError, ServerSelectionTimeoutError
 
+import const
 from mongo.base_service import MongoAccessDefaultService
 
 
@@ -66,4 +67,8 @@ class MongoAccessSearchedTextService(MongoAccessDefaultService):
                 'searched_text': 'something'
             }
         """
-        self.collection.insert_one(item)
+        print(f'Loading data to database {self.db_name}')
+        try:
+            self.collection.insert_one(item)
+        except DuplicateKeyError as e:
+            print(f"Repeated searched text: {e.details.get('keyValue')[const.SEARCHED_TEXT_KEY]}")
