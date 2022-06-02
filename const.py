@@ -20,3 +20,5 @@ STORING_CONST = {
     'max_salary': 'max_salary',
     'currency': 'currency',
 }
+
+DB_NAME = 'vacancies_searching'

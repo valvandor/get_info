@@ -1,27 +1,21 @@
 """
 This module provide for Vacancy object model
 """
-from pymongo.collection import Collection
 from pymongo.errors import DuplicateKeyError, ServerSelectionTimeoutError
 
+from mongo.base_service import MongoAccessDefaultService
 
-class MongoAccessVacanciesService:
+
+class MongoAccessVacanciesService(MongoAccessDefaultService):
     """
-    This service is exclusive for vacancies_searching database
+    This service is exclusive for vacancies collections
     """
-    def __init__(self, client):
-        self.client = client
-        self.vacancy_db = client['vacancies_searching']
-        self.collection_name = None
+    def __init__(self, collection_name):
+        super().__init__(collection_name)
+        self.db_name = self.get_db_name()
+        self.collection = self.get_collection()
 
-    def use_collection(self, collection_name: str) -> Collection:
-        """
-        Makes and uses collection if it's not exist or select it
-        """
-        self.collection_name = collection_name
-        return Collection(self.vacancy_db, collection_name)
-
-    def insert(self, data: list, collection: Collection):
+    def insert_vacancies(self, data: list):
         """
         Add vacancies to collection
 
@@ -35,17 +29,16 @@ class MongoAccessVacanciesService:
                 'max_salary': 'upper salary limit',
                 'currency': 'currency'
             }
-            collection: selected collection
         Returns:
             None
         Raises:
             DuplicateKeyError: if repeated id
             ServerSelectionTimeoutError: if no active client
         """
-        print(f'Loading data to database {self.vacancy_db.name} in collection {self.collection_name}', end='')
+        print(f'Loading data to database {self.db_name}', end='')
         for i, vacancy in enumerate(data):
             try:
-                collection.insert_one(vacancy)
+                self.collection.insert_one(vacancy)
                 if not i % 20:
                     print('.', end='')
             except DuplicateKeyError:
