@@ -16,5 +16,17 @@ class MongoAccessDefaultService:
     def get_collection(self):
         return self._collection
 
-    def add_index(self, field):
-        self._collection.create_index(field, unique=True)
+    def use_index(self, field: str):
+        """
+        Add index, if it's not already exist
+
+        Args:
+            field: index name
+        """
+        if field not in self._list_index():
+            self._collection.create_index(field, unique=True)
+        else:
+            print(f'Index {field} already exist')
+
+    def _list_index(self):
+        return [index['key'][0][0] for index in self._collection.index_information().values()]

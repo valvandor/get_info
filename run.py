@@ -17,11 +17,13 @@ def main():
 
     if vacancies_list:
         searched_text_collection = MongoAccessSearchedTextService(const.SEARCHED_COLLECTION)
-        searched_text_collection.add_index(const.FILE_PATHS_CONST['searched_text_key'])
+        searched_text_collection.use_index(const.SEARCHED_TEXT_KEY)
         searched_text_collection.insert(searched_text)
 
         vacancies_collection = MongoAccessVacanciesService(f'collection_{file_prefix_name}_vacancies')
         vacancies_collection.insert_vacancies(vacancies_list)
+        vacancies_collection.use_index('link')
+
 
 
 if __name__ == '__main__':
