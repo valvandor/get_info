@@ -58,7 +58,7 @@ class DAOSearchedText(DAODefaultObject):
         self.db_name = self.get_db_name()
         self.collection = self.get_collection()
 
-    def insert(self, item: dict):
+    def insert(self, item: dict) -> bool:
         """
         Insert into collection new searched text
 
@@ -66,9 +66,14 @@ class DAOSearchedText(DAODefaultObject):
             item: searched text, should be like: {
                 'searched_text': 'something'
             }
+
+        Returns:
+            True or False depending on successful insertion
         """
         print(f'Loading data to database {self.db_name}')
         try:
             self.collection.insert_one(item)
+            return True
         except DuplicateKeyError as e:
             print(f"Repeated searched text: {e.details.get('keyValue')[const.SEARCHED_TEXT_KEY]}")
+            return False

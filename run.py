@@ -18,11 +18,11 @@ def main():
     if vacancies_list:
         searched_text_collection = DAOSearchedText(const.SEARCHED_COLLECTION)
         searched_text_collection.use_index(const.SEARCHED_TEXT_KEY)
-        searched_text_collection.insert(searched_text)
-
-        vacancies_collection = DAOVacancies(f'collection_{file_prefix_name}_vacancies')
-        vacancies_collection.use_index('link')
-        vacancies_collection.insert_vacancies(vacancies_list)
+        is_new_search = searched_text_collection.insert(searched_text)
+        if is_new_search:
+            vacancies_collection = DAOVacancies(f'collection_{file_prefix_name}_vacancies')
+            vacancies_collection.use_index('link')
+            vacancies_collection.insert_vacancies(vacancies_list)
 
 
 if __name__ == '__main__':
