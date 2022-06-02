@@ -1,7 +1,7 @@
 from mongo.db import client
 
 
-class MongoAccessDefaultService:
+class DAODefaultObject:
     """
     Base service for Access Mongo
     """

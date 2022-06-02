@@ -4,12 +4,12 @@ This module provide for Vacancy object model
 from pymongo.errors import DuplicateKeyError, ServerSelectionTimeoutError
 
 import const
-from mongo.base_service import MongoAccessDefaultService
+from mongo.base import DAODefaultObject
 
 
-class MongoAccessVacanciesService(MongoAccessDefaultService):
+class DAOVacancies(DAODefaultObject):
     """
-    This service is exclusive for vacancies collections
+    Data access object for manipulate with collections stored vacancies
     """
     def __init__(self, collection_name):
         super().__init__(collection_name)
@@ -49,9 +49,9 @@ class MongoAccessVacanciesService(MongoAccessDefaultService):
                 break
 
 
-class MongoAccessSearchedTextService(MongoAccessDefaultService):
+class DAOSearchedText(DAODefaultObject):
     """
-    This service is exclusive for collection stored searched texts
+    Data access object for manipulate with collection stored searched texts
     """
     def __init__(self, collection_name):
         super().__init__(collection_name)

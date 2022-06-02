@@ -1,7 +1,7 @@
 import const
 from HH_search.search_service import HeadHunterSearchService
 from HH_search.request_consts import URL, HEADERS, PARAMS
-from mongo.services import MongoAccessVacanciesService, MongoAccessSearchedTextService
+from mongo.services import DAOVacancies, DAOSearchedText
 
 
 def main():
@@ -16,14 +16,13 @@ def main():
     searched_text = search_object.get_last_searched_text()
 
     if vacancies_list:
-        searched_text_collection = MongoAccessSearchedTextService(const.SEARCHED_COLLECTION)
+        searched_text_collection = DAOSearchedText(const.SEARCHED_COLLECTION)
         searched_text_collection.use_index(const.SEARCHED_TEXT_KEY)
         searched_text_collection.insert(searched_text)
 
-        vacancies_collection = MongoAccessVacanciesService(f'collection_{file_prefix_name}_vacancies')
-        vacancies_collection.insert_vacancies(vacancies_list)
+        vacancies_collection = DAOVacancies(f'collection_{file_prefix_name}_vacancies')
         vacancies_collection.use_index('link')
-
+        vacancies_collection.insert_vacancies(vacancies_list)
 
 
 if __name__ == '__main__':
