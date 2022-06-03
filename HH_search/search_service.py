@@ -29,7 +29,7 @@ class BaseSearch:
         try:
             response = requests.get(**request_data)
         except ConnectionError as e:
-            print(f'\nNo active connection to internet \n{e}')
+            print(f'\nSomething with connection to internet \n> {e}')
             return
         return response
 
@@ -51,6 +51,8 @@ class BaseSearch:
         """
         if not os.path.exists(file_path):
             response = self.get_response(request_data)
+            if response is None:
+                return
             if not response.status_code:
                 os.remove(file_path)
                 self._alert_not_found()
@@ -58,14 +60,18 @@ class BaseSearch:
             with open(file_path, 'w', encoding='UTF-8') as f:
                 f.write(response.text)
 
-        with open(file_path, 'r') as f:
-            html = f.read()
+        try:
+            with open(file_path, 'r') as f:
+                html = f.read()
+        except FileNotFoundError:
+            print(f"There's no file {file_path}")
+            return None
         return Soup(html, 'html.parser')
 
 
 class HeadHunterSearchService(HeadHunterParseMixin, StoringFilesService, BaseSearch):
     """
-    This class exclusively for headhunter
+    This service exclusively for headhunter
     """
     def __init__(self, url, headers, params):
         super().__init__()
@@ -96,18 +102,17 @@ class HeadHunterSearchService(HeadHunterParseMixin, StoringFilesService, BaseSea
             if i != 0:
                 self.__request_data['params']['page'] = str(i)
 
-            file_path = f'{dir_with_pages}/page_{i + 1}.txt'
+            file_path = f'{dir_with_pages}page_{i + 1}.txt'
             souped_page = self._get_souped_page(self.__request_data, file_path)
             if not souped_page:
                 break
 
             vacancies += self._get_vacancies_on_page(souped_page)
-
-            if souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None:
+            if not self._has_next_page(souped_page):
                 print()
                 break
             i += 1
-            self.__imitate_loading()
+            print('.', end='')
 
         if not vacancies:
             self.remove_cache_dir(searched_text, folder_name)
@@ -119,6 +124,3 @@ class HeadHunterSearchService(HeadHunterParseMixin, StoringFilesService, BaseSea
 
         return vacancies
 
-    @staticmethod
-    def __imitate_loading():
-        print('.', end='')

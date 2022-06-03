@@ -12,11 +12,11 @@ class HeadHunterParseMixin:
     """
 
     @staticmethod
-    def _is_last_page(souped_page: Soup) -> bool:
+    def _has_next_page(souped_page: Soup) -> bool:
         """
-        Checks if the page is the latest
+        Checks if the current page is the latest
         """
-        return souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None
+        return not souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None
 
     def _get_vacancies_on_page(self, souped_page: Soup) -> List[dict]:
         """
@@ -28,8 +28,11 @@ class HeadHunterParseMixin:
             list with described vacancies
         """
         main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
-        vacancies_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
-        return [self.__parse_hh_vacancy(anchor) for anchor in vacancies_anchors]
+        try:
+            vacancies_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
+            return [self.__parse_hh_vacancy(anchor) for anchor in vacancies_anchors]
+        except AttributeError:
+            return
 
     def __parse_hh_vacancy(self, anchor: Soup) -> dict:
         """
