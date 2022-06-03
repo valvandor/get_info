@@ -12,12 +12,10 @@ JSON_SUFFIX_FILE = '_vacancies.json'
 SEARCHED_TEXT_KEY = 'searched_text'
 FILE_CONTAINING_LAST = 'last_searched_text.json'
 
-STORING_CONST = {
-    'id': '_id',
-    'vacancy_name': 'vacancy_name',
-    'link': 'link',
-    'city': 'city',
-    'min_salary': 'min_salary',
-    'max_salary': 'max_salary',
-    'currency': 'currency',
-}
+ID = '_id'
+VACANCY_NAME = 'vacancy_name'
+LINK = 'link'
+CITY = 'city'
+MIN_SALARY = 'min_salary'
+MAX_SALARY = 'max_salary'
+CURRENCY = 'currency'
