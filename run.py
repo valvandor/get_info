@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import const
 from HH_search.search_service import HeadHunterSearchService
 from HH_search.request_consts import URL, HEADERS, PARAMS
@@ -31,6 +33,11 @@ def main():
             repeated_vacancies = vacancies_list
         vacancies_collection.update_many_by_field(repeated_vacancies, const.LINK)
 
+    min_salary = 60000  # like user data
+    filters = ['over']
+    vacancies_over_min = vacancies_collection.get_objects_by_filter(
+        const.MIN_SALARY, value=min_salary, filters=filters)
+    pprint(vacancies_over_min)
 
 if __name__ == '__main__':
     main()

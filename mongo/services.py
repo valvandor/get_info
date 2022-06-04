@@ -59,6 +59,10 @@ class DAOVacancies(DAODefaultObject):
             if is_update:
                 print(f'Successful update vacancy {item[search_key]}')
 
+    def get_objects_by_filter(self, search_key: str, value, filters: list):
+        if 'over' in filters:
+            return [vacancy for vacancy in self._get_many_by_gt_filter(search_key, value)]
+
 
 class DAOSearchedText(DAODefaultObject):
     """

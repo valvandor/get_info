@@ -53,3 +53,6 @@ class DAODefaultObject:
             return False
         self._collection.replace_one({key: obj[key]}, obj, upsert=upsert)
         return True
+
+    def _get_many_by_gt_filter(self, field, value):
+        return self._collection.find({field: {'$gt': value}})
