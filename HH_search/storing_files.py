@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 
-from const import FILE_PATHS_CONST
+import const
 
 
 class StoringFilesService:
@@ -10,41 +10,41 @@ class StoringFilesService:
     Service for storing files
     """
     def __init__(self):
-        self._root_dir = FILE_PATHS_CONST['root_directory']
-        self._data_dir = FILE_PATHS_CONST['data_directory']
-        self._cache_dir = FILE_PATHS_CONST['cache_directory']
-        self._json_file_suffix = FILE_PATHS_CONST['json_file_suffix']
-        self._key_for_last = FILE_PATHS_CONST['key_for_last']
-        self._file_containing_last = FILE_PATHS_CONST['file_containing_last']
+        self._root_dir = const.ROOT_DIRECTORY
+        self._data_dir = const.DATA_DIRECTORY
+        self._cache_dir = const.CACHE_DIRECTORY
+        self._json_file_suffix = const.JSON_SUFFIX_FILE
+        self._searched_text_key = const.SEARCHED_TEXT_KEY
+        self._file_containing_last = const.FILE_CONTAINING_LAST
+        self.last_searched_text_file = f'{self._root_dir}{self._data_dir}{self._file_containing_last}'
 
-    def get_path_to_json_file(self, prefix):
+    def _get_path_to_json_file(self, prefix):
         return f'{self._root_dir}{self._data_dir}{prefix}{self._json_file_suffix}'
 
-    def get_path_to_file_containing_last(self):
-        return f'{self._root_dir}{self._data_dir}{self._file_containing_last}'
-
     def create_json_file(self, vacancies, prefix):
-        json_file_path = self.get_path_to_json_file(prefix)
+        json_file_path = self._get_path_to_json_file(prefix)
         self._write_to_json_file(vacancies, json_file_path)
 
     def update_last_searched_text(self, searched_text):
-        last_searched_text_file = self.get_path_to_file_containing_last()
-        self._write_to_json_file({self._key_for_last: searched_text}, last_searched_text_file)
+        data = {self._searched_text_key: searched_text}
+        self._write_to_json_file(data, self.last_searched_text_file)
 
     def make_data_directory(self):
         """
         Makes directory for storing parsed json files
         """
-        if not os.path.exists(f'{self._root_dir}{self._data_dir}'):
-            os.mkdir(f'{self._root_dir}{self._data_dir}')
+        cahce_dir_path = f'{self._root_dir}{self._data_dir}'
+        if not os.path.exists(cahce_dir_path):
+            os.mkdir(cahce_dir_path)
 
     def make_cache_dir(self, keyword, folder_name):
         """
         Makes directories for storing loaded pages
         """
-        if not os.path.exists(f'{self._root_dir}{self._cache_dir}'):
-            os.mkdir(f'{self._root_dir}{self._cache_dir}')
-        dir_with_pages = f'{self._root_dir}{self._cache_dir}"{keyword}" {folder_name}/'
+        cache_dir_path = f'{self._root_dir}{self._cache_dir}'
+        if not os.path.exists(cache_dir_path):
+            os.mkdir(cache_dir_path)
+        dir_with_pages = f'{cache_dir_path}"{keyword}" {folder_name}/'
         if not os.path.exists(dir_with_pages):
             os.mkdir(dir_with_pages)
         return dir_with_pages
@@ -57,14 +57,12 @@ class StoringFilesService:
         if os.path.exists(dir_with_pages):
             shutil.rmtree(dir_with_pages, ignore_errors=True)
 
-    def get_last_searched_text(self):
-        try:
-            with open(f'{self._root_dir}{self._data_dir}{self._file_containing_last}', 'r') as file:
-                data = (json.load(file))
-                search_text = data[self.__searched_text]
-        except OSError:
-            return
-        return search_text
+    def get_last_searched_text(self) -> dict:
+        """
+        Returns last searched text
+        """
+        with open(self.last_searched_text_file, 'r') as file:
+            return json.load(file)
 
     @staticmethod
     def _write_to_json_file(data, file_path: str):
