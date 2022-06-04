@@ -1,9 +1,10 @@
 """
 This module provide for Vacancy object model
 """
-from pymongo.errors import DuplicateKeyError, ServerSelectionTimeoutError
+from typing import List
 
-import const
+from pymongo.errors import DuplicateKeyError
+
 from mongo.base import DAODefaultObject
 
 
@@ -14,14 +15,15 @@ class DAOVacancies(DAODefaultObject):
     def __init__(self, collection_name):
         super().__init__(collection_name)
         self.db_name = self.get_db_name()
+        self.collection_name = collection_name
         self.collection = self.get_collection()
 
-    def insert_vacancies(self, data: list):
+    def insert_many(self, data: list) -> True or List[int]:
         """
         Add vacancies to collection
 
         Args:
-            data: inserted data with at least one item, which should be like: {
+            data: inserted vacancies with at least one item, which should be like: {
                 '_id': 'id',
                 'vacancy_name': 'some vacancy name',
                 'link': 'correct link',
@@ -31,22 +33,31 @@ class DAOVacancies(DAODefaultObject):
                 'currency': 'currency'
             }
         Returns:
-            None
+            if success True, else list with indexes of repeated vacancies
         Raises:
-            DuplicateKeyError: if repeated id
-            ServerSelectionTimeoutError: if no active client
+            DuplicateKeyError: if repeated id or another index
         """
-        print(f'Loading data to database {self.db_name}', end='')
+        print(f'Loading data to database {self.db_name} in collection {self.collection_name}', end='')
+        repeated_index_list = []
         for i, vacancy in enumerate(data):
             try:
                 self.collection.insert_one(vacancy)
-                if not i % 20:
+                if not i % 100:
                     print('.', end='')
             except DuplicateKeyError:
-                print('\nThere was a problem at index {} of inserted list with {}'.format(i, vacancy), end='')
-            except ServerSelectionTimeoutError:
-                print('\nCheck your mongo client')
-                break
+                repeated_index_list.append(i)
+        print()
+        return repeated_index_list if repeated_index_list else False
+
+    def update_many_by_field(self, data: List[dict], search_key: str):
+        """
+        Updates vacancies by
+        """
+        print('Trying to update')
+        for item in data:
+            is_update = self._update_by_field(item, search_key)
+            if is_update:
+                print(f'Successful update vacancy {item[search_key]}')
 
 
 class DAOSearchedText(DAODefaultObject):
@@ -56,6 +67,7 @@ class DAOSearchedText(DAODefaultObject):
     def __init__(self, collection_name):
         super().__init__(collection_name)
         self.db_name = self.get_db_name()
+        self.collection_name = collection_name
         self.collection = self.get_collection()
 
     def insert(self, item: dict) -> bool:
@@ -70,10 +82,10 @@ class DAOSearchedText(DAODefaultObject):
         Returns:
             True or False depending on successful insertion
         """
-        print(f'Loading data to database {self.db_name}')
+        print(f'Loading data to database {self.db_name} in collection {self.collection_name}')
         try:
             self.collection.insert_one(item)
             return True
         except DuplicateKeyError as e:
-            print(f"Repeated searched text: {e.details.get('keyValue')[const.SEARCHED_TEXT_KEY]}")
+            print(f"Repeated searched text: {e.details.get('keyValue')}")
             return False
