@@ -49,15 +49,25 @@ class DAOVacancies(DAODefaultObject):
         print()
         return repeated_index_list if repeated_index_list else False
 
-    def update_many_by_field(self, data: List[dict], search_key: str):
+    def update_many_by_field(self, data: List[dict], search_key: str) -> List[int] or None:
         """
-        Updates vacancies by
-        """
+        Updates vacancies by search_key if possible
+
+        Args:
+            data: data to be updated
+            search_key: the field on which to update
+
+        Returns:
+            list of indexes which was updated in data or None if there're not updated items
+            """
         print('Trying to update')
-        for item in data:
+        updated_indexes = []
+        for i, item in enumerate(data):
             is_update = self._update_by_field(item, search_key)
             if is_update:
-                print(f'Successful update vacancy {item[search_key]}')
+                updated_indexes.append(i)
+        if updated_indexes:
+            return updated_indexes
 
     def get_objects_by_filter(self, search_key: str, value, filters: list):
         if 'over' in filters:

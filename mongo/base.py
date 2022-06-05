@@ -12,6 +12,8 @@ class DAODefaultObject:
         self._client = client
         self._db = self._client['vacancies_searching']
         self._collection = self._db[collection_name]
+        self.collection_name = collection_name
+        self.is_exist = self._is_exist()
 
     def get_db_name(self):
         return self._db.name
@@ -40,7 +42,7 @@ class DAODefaultObject:
         if object.get(const.ID):
             del object[const.ID]
 
-    def get_object(self, key, value) -> dict:
+    def get_object(self, key: str, value) -> dict:
         return self._collection.find_one({key: value})
 
     def _update_by_field(self, obj, key, upsert=False):
@@ -56,3 +58,15 @@ class DAODefaultObject:
 
     def _get_many_by_gt_filter(self, field, value):
         return self._collection.find({field: {'$gt': value}})
+
+    def _is_exist(self):
+        return self.collection_name in self._db.list_collection_names()
+
+    def is_empty(self):
+        any_object = self._collection.find_one({})
+        return any_object is None
+
+    def drop(self):
+        if self.is_empty:
+            self._collection.drop()
+            print(f'Drop empty collection {self.collection_name}')

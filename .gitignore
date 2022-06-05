@@ -5,7 +5,7 @@ __pycache__/
 # Ignore dynaconf secret files
 .secrets.*
 
-# HH_search downloaded files
+# downloaded files
 *.txt
 # saved vacancies
 *vacancies.json
