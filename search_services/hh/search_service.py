@@ -57,15 +57,15 @@ class BaseSearch:
                 os.remove(file_path)
                 self._alert_not_found()
                 return
-            with open(file_path, 'w', encoding='UTF-8') as f:
-                f.write(response.text)
+            if response.ok:
+                with open(file_path, 'w', encoding='UTF-8') as f:
+                    f.write(response.text)
+            else:
+                raise Exception("that's not ok, check it out")
 
-        try:
-            with open(file_path, 'r') as f:
-                html = f.read()
-        except FileNotFoundError:
-            print(f"There's no file {file_path}")
-            return None
+        with open(file_path, 'r') as f:
+            html = f.read()
+
         return Soup(html, 'html.parser')
 
 
