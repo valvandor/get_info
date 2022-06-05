@@ -31,13 +31,16 @@ def main():
                                       if i in unsuccessful_indexes]
         else:
             repeated_vacancies = vacancies_list
-        vacancies_collection.update_many_by_field(repeated_vacancies, const.LINK)
+        updated_indexes = vacancies_collection.update_many_by_field(repeated_vacancies, const.LINK)
+        if updated_indexes:
+            print(f'Some vacancies was updated, on indexes {updated_indexes}')
 
     min_salary = 60000  # like user data
     filters = ['over']
     vacancies_over_min = vacancies_collection.get_objects_by_filter(
         const.MIN_SALARY, value=min_salary, filters=filters)
     pprint(vacancies_over_min)
+
 
 if __name__ == '__main__':
     main()
