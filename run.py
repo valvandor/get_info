@@ -17,7 +17,7 @@ def main():
     vacancies_list = search_object.make_fully_hh_search(text)
     last_searched_data = search_object.get_last_searched_text()
 
-    vacancies_collection = DAOVacancies(f'collection_{file_prefix_name}_vacancies')  # TODO: remove if no vacancies
+    vacancies_collection = DAOVacancies(f'collection_{file_prefix_name}_vacancies')
     repeated_vacancies = []
     if vacancies_list:
         searched_text_collection = DAOSearchedText(const.SEARCHED_COLLECTION)
@@ -34,12 +34,15 @@ def main():
         updated_indexes = vacancies_collection.update_many_by_field(repeated_vacancies, const.LINK)
         if updated_indexes:
             print(f'Some vacancies was updated, on indexes {updated_indexes}')
+    else:
+        vacancies_collection.drop()
 
-    min_salary = 60000  # like user data
-    filters = ['over']
-    vacancies_over_min = vacancies_collection.get_objects_by_filter(
-        const.MIN_SALARY, value=min_salary, filters=filters)
-    pprint(vacancies_over_min)
+    if vacancies_collection.is_exist:
+        min_salary = 60000  # like user data
+        filters = ['over']
+        vacancies_over_min = vacancies_collection.get_objects_by_filter(
+            const.MIN_SALARY, value=min_salary, filters=filters)
+        pprint(vacancies_over_min)
 
 
 if __name__ == '__main__':
