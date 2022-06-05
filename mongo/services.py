@@ -74,16 +74,18 @@ class DAOVacancies(DAODefaultObject):
         picked_filters = {}
         if const.CURRENCY in filters:
             currency_value = filters[const.CURRENCY]
-            picked_filters[const.CURRENCY]: currency_value
+            picked_filters[const.CURRENCY] = currency_value
         if const.SALARY in filters:
             salary_values = filters[const.SALARY]
             if salary_values == 'over':
-                picked_filters['$or']: [
+                picked_filters['$or'] = [
                     {const.MIN_SALARY: {const.GTE: value}},
                     {const.MIN_SALARY: {const.LTE: value}}
                 ]
+        vacancies = [vacancy for vacancy in self.get_by_filter(picked_filters)
+                     if vacancy[const.CURRENCY]]
 
-        return [vacancy for vacancy in self.get_by_filter(picked_filters)]
+        return vacancies
 
 
 class DAOSearchedText(DAODefaultObject):
