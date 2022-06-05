@@ -40,7 +40,7 @@ def main():
     if vacancies_collection.is_exist():
         filters = {
             const.SALARY: 'over',
-            const.CURRENCY: 'руб',
+            const.CURRENCY: ['руб', 'рублей', 'rub']
         }
         vacancies_over_min = vacancies_collection.get_vacancies_over_salary(60000, filters)
         pprint(vacancies_over_min)

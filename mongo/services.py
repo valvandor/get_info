@@ -73,12 +73,12 @@ class DAOVacancies(DAODefaultObject):
     def get_vacancies_over_salary(self, value: int, filters: dict) -> List[dict]:
         picked_filters = {}
         if const.CURRENCY in filters:
-            currency_value = filters[const.CURRENCY]
-            picked_filters[const.CURRENCY] = currency_value
+            currency_values = filters[const.CURRENCY]
+            picked_filters[const.OR] = [{const.CURRENCY: value} for value in currency_values]
         if const.SALARY in filters:
             salary_values = filters[const.SALARY]
             if salary_values == 'over':
-                picked_filters['$or'] = [
+                picked_filters[const.OR] = [
                     {const.MIN_SALARY: {const.GTE: value}},
                     {const.MIN_SALARY: {const.LTE: value}}
                 ]
