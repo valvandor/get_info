@@ -5,6 +5,7 @@ from typing import List
 
 from pymongo.errors import DuplicateKeyError
 
+import const
 from mongo.base import DAODefaultObject
 
 
@@ -69,15 +70,21 @@ class DAOVacancies(DAODefaultObject):
         if updated_indexes:
             return updated_indexes
 
-    def get_objects_by_filter(self, search_key: str, value, filters: list):
+    def get_objects_by_filter(self, value, filters: list):
         if 'over' in filters:
-            return [vacancy for vacancy in self._get_many_by_gt_filter(search_key, value)]
+            vacancies_with_min_salary = [vacancy for vacancy in self._get_many_by_gte_filter(const.MIN_SALARY, value)]
+            vacancies_with_max_salary = [vacancy for vacancy in self._get_many_by_lte_filter(const.MAX_SALARY, value)]
+            for vacancy in vacancies_with_max_salary:
+                if vacancy not in vacancies_with_min_salary:
+                    vacancies_with_min_salary.append(vacancy)
+            return vacancies_with_min_salary
 
 
 class DAOSearchedText(DAODefaultObject):
     """
     Data access object for manipulate with collection stored searched texts
     """
+
     def __init__(self, collection_name):
         super().__init__(collection_name)
         self.db_name = self.get_db_name()
