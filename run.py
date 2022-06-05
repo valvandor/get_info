@@ -37,7 +37,7 @@ def main():
     else:
         vacancies_collection.drop()
 
-    if vacancies_collection.is_exist:
+    if vacancies_collection.is_exist():
         min_salary = 60000  # like user data
         filters = ['over']
         vacancies_over_min = vacancies_collection.get_objects_by_filter(

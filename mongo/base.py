@@ -13,7 +13,6 @@ class DAODefaultObject:
         self._db = self._client['vacancies_searching']
         self._collection = self._db[collection_name]
         self.collection_name = collection_name
-        self.is_exist = self._is_exist()
 
     def get_db_name(self):
         return self._db.name
@@ -59,7 +58,7 @@ class DAODefaultObject:
     def _get_many_by_gt_filter(self, field, value):
         return self._collection.find({field: {'$gt': value}})
 
-    def _is_exist(self):
+    def is_exist(self):
         return self.collection_name in self._db.list_collection_names()
 
     def is_empty(self):
