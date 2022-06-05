@@ -5,6 +5,7 @@ from typing import List
 
 from pymongo.errors import DuplicateKeyError
 
+import const
 from mongo.base import DAODefaultObject
 
 
@@ -58,7 +59,7 @@ class DAOVacancies(DAODefaultObject):
             search_key: the field on which to update
 
         Returns:
-            list of indexes which was updated in data or None if there're not updated items
+            list of indexes which was updated in data or None if there are not updated items
             """
         print('Trying to update')
         updated_indexes = []
@@ -69,15 +70,29 @@ class DAOVacancies(DAODefaultObject):
         if updated_indexes:
             return updated_indexes
 
-    def get_objects_by_filter(self, search_key: str, value, filters: list):
-        if 'over' in filters:
-            return [vacancy for vacancy in self._get_many_by_gt_filter(search_key, value)]
+    def get_vacancies_over_salary(self, value: int, filters: dict) -> List[dict]:
+        picked_filters = {}
+        if const.CURRENCY in filters:
+            currency_values = filters[const.CURRENCY]
+            picked_filters[const.OR] = [{const.CURRENCY: value} for value in currency_values]
+        if const.SALARY in filters:
+            salary_values = filters[const.SALARY]
+            if salary_values == 'over':
+                picked_filters[const.OR] = [
+                    {const.MIN_SALARY: {const.GTE: value}},
+                    {const.MIN_SALARY: {const.LTE: value}}
+                ]
+        vacancies = [vacancy for vacancy in self.get_by_filter(picked_filters)
+                     if vacancy[const.CURRENCY]]
+
+        return vacancies
 
 
 class DAOSearchedText(DAODefaultObject):
     """
     Data access object for manipulate with collection stored searched texts
     """
+
     def __init__(self, collection_name):
         super().__init__(collection_name)
         self.db_name = self.get_db_name()

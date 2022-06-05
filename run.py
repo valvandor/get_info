@@ -19,7 +19,7 @@ def main():
 
     vacancies_collection = DAOVacancies(f'collection_{file_prefix_name}_vacancies')
     repeated_vacancies = []
-    if vacancies_list:
+    if last_searched_data and vacancies_list:
         searched_text_collection = DAOSearchedText(const.SEARCHED_COLLECTION)
         searched_text_collection.use_index(const.SEARCHED_TEXT_KEY, unique=True)
         is_new_search = searched_text_collection.insert(last_searched_data)
@@ -37,11 +37,12 @@ def main():
     else:
         vacancies_collection.drop()
 
-    if vacancies_collection.is_exist:
-        min_salary = 60000  # like user data
-        filters = ['over']
-        vacancies_over_min = vacancies_collection.get_objects_by_filter(
-            const.MIN_SALARY, value=min_salary, filters=filters)
+    if vacancies_collection.is_exist():
+        filters = {
+            const.SALARY: 'over',
+            const.CURRENCY: ['руб', 'рублей', 'rub']
+        }
+        vacancies_over_min = vacancies_collection.get_vacancies_over_salary(60000, filters)
         pprint(vacancies_over_min)
 
 

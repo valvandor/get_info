@@ -57,12 +57,15 @@ class StoringFilesService:
         if os.path.exists(dir_with_pages):
             shutil.rmtree(dir_with_pages, ignore_errors=True)
 
-    def get_last_searched_text(self) -> dict:
+    def get_last_searched_text(self) -> dict or None:
         """
         Returns last searched text
         """
-        with open(self.last_searched_text_file, 'r') as file:
-            return json.load(file)
+        try:
+            with open(self.last_searched_text_file, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return None
 
     @staticmethod
     def _write_to_json_file(data, file_path: str):
