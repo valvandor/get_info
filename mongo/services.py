@@ -59,7 +59,7 @@ class DAOVacancies(DAODefaultObject):
             search_key: the field on which to update
 
         Returns:
-            list of indexes which was updated in data or None if there're not updated items
+            list of indexes which was updated in data or None if there are not updated items
             """
         print('Trying to update')
         updated_indexes = []
@@ -70,14 +70,20 @@ class DAOVacancies(DAODefaultObject):
         if updated_indexes:
             return updated_indexes
 
-    def get_objects_by_filter(self, value, filters: list):
-        if 'over' in filters:
-            vacancies_with_min_salary = [vacancy for vacancy in self._get_many_by_gte_filter(const.MIN_SALARY, value)]
-            vacancies_with_max_salary = [vacancy for vacancy in self._get_many_by_lte_filter(const.MAX_SALARY, value)]
-            for vacancy in vacancies_with_max_salary:
-                if vacancy not in vacancies_with_min_salary:
-                    vacancies_with_min_salary.append(vacancy)
-            return vacancies_with_min_salary
+    def get_vacancies_over_salary(self, value: int, filters: dict) -> List[dict]:
+        picked_filters = {}
+        if const.CURRENCY in filters:
+            currency_value = filters[const.CURRENCY]
+            picked_filters[const.CURRENCY]: currency_value
+        if const.SALARY in filters:
+            salary_values = filters[const.SALARY]
+            if salary_values == 'over':
+                picked_filters['$or']: [
+                    {const.MIN_SALARY: {const.GTE: value}},
+                    {const.MIN_SALARY: {const.LTE: value}}
+                ]
+
+        return [vacancy for vacancy in self.get_by_filter(picked_filters)]
 
 
 class DAOSearchedText(DAODefaultObject):

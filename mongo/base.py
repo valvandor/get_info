@@ -55,11 +55,9 @@ class DAODefaultObject:
         self._collection.replace_one({key: obj[key]}, obj, upsert=upsert)
         return True
 
-    def _get_many_by_gte_filter(self, field, value):
-        return self._collection.find({field: {'$gte': value}})
-
-    def _get_many_by_lte_filter(self, field, value):
-        return self._collection.find({field: {'$lte': value}})
+    def get_by_filter(self, filters):
+        objects_cursor = self._collection.find({**filters}, {'_id': False})
+        return objects_cursor
 
     def is_exist(self):
         return self.collection_name in self._db.list_collection_names()
