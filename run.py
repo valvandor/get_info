@@ -1,8 +1,8 @@
 from pprint import pprint
 
 import const
-from HH_search.search_service import HeadHunterSearchService
-from HH_search.request_consts import URL, HEADERS, PARAMS
+from search_services.hh.search_service import HeadHunterSearchService
+from search_services.hh.request_consts import URL, HEADERS, PARAMS
 from mongo.services import DAOVacancies, DAOSearchedText
 
 

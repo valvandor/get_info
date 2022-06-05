@@ -5,8 +5,8 @@ from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup as Soup
 from typing import List
 
-from HH_search.parsing import HeadHunterParseMixin
-from HH_search.storing_files import StoringFilesService
+from search_services.hh.parsing import HeadHunterParseMixin
+from search_services.hh.storing_files import StoringFilesService
 
 
 class BaseSearch:
@@ -47,7 +47,7 @@ class BaseSearch:
             request_data — dict with data for requesting with keys url, headers and params
 
         Returns:
-            None if response status code 404 else BeautifulSoup object
+            None if no response or status code 404 else BeautifulSoup object
         """
         if not os.path.exists(file_path):
             response = self.get_response(request_data)
