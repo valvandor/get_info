@@ -1,37 +1,19 @@
 import os
 
-import requests
-from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup as Soup
 from typing import List
 
+from search_services import BaseSearch
 from search_services.hh.parsing import HeadHunterParseMixin
-from search_services.hh.storing_files import StoringFilesService
+from search_services.storing_files import StoringFilesService
 
 
-class BaseSearch:
+class BaseSoupedSearch(BaseSearch, StoringFilesService):
     """
-    Base class for searching
+    Base class for searching via BeautifulSoup
     """
-    @staticmethod
-    def get_response(request_data) -> str or None:
-        """
-        Makes request to the URL using headers and params
-
-        Params:
-            request_data — dict with data for request
-        Returns:
-            response from URL
-        Raises:
-            ConnectionError: if no connection to internet
-        """
-
-        try:
-            response = requests.get(**request_data)
-        except ConnectionError as e:
-            print(f'\nSomething with connection to internet \n> {e}')
-            return
-        return response
+    # def __init__(self):
+    #     super().__init__()
 
     @staticmethod
     def _alert_not_found():
@@ -69,7 +51,7 @@ class BaseSearch:
         return Soup(html, 'html.parser')
 
 
-class HeadHunterSearchService(HeadHunterParseMixin, StoringFilesService, BaseSearch):
+class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
     """
     This service exclusively for headhunter
     """

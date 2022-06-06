@@ -22,5 +22,6 @@ SALARY = 'salary'
 CURRENCY = 'currency'
 
 OR = '$or'
+AND = '$and'
 GTE = '$gte'
 LTE = '$lte'
