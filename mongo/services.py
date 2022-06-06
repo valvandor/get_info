@@ -80,7 +80,7 @@ class DAOVacancies(DAODefaultObject):
                 {
                     const.OR: [
                         {const.MIN_SALARY: {const.GTE: value}},
-                        {const.MAX_SALARY: {const.LTE: value}}
+                        {const.MAX_SALARY: {const.GTE: value}}
                     ]
                 }
             ]
