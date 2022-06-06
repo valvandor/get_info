@@ -1,10 +1,8 @@
-import os
-
 from bs4 import BeautifulSoup as Soup
 from typing import List
 
 from search_services import BaseSearch
-from search_services.hh.parsing import HeadHunterParseMixin
+from search_services.hh.soup_parsing import HeadHunterParseMixin
 from search_services.storing_files import StoringFilesService
 
 
@@ -12,43 +10,21 @@ class BaseSoupedSearch(BaseSearch, StoringFilesService):
     """
     Base class for searching via BeautifulSoup
     """
-    # def __init__(self):
-    #     super().__init__()
 
-    @staticmethod
-    def _alert_not_found():
-        print('\nPage not found')
-
-    def _get_souped_page(self, request_data: dict, file_path: str) -> Soup or None:
+    def get_souped_page(self, request_data: dict, file_path: str) -> Soup or None:
         """
-        Makes request if no storing file by current url and store it.
-        After that, reads data from storing file and makes it into souped page
+        Makes BeautifulSoup object on html code
 
         Params:
             file_path — path to file, which should be loaded or where to save
             request_data — dict with data for requesting with keys url, headers and params
 
         Returns:
-            None if no response or status code 404 else BeautifulSoup object
+            None if no html code else BeautifulSoup object
         """
-        if not os.path.exists(file_path):
-            response = self.get_response(request_data)
-            if response is None:
-                return
-            if not response.status_code:
-                os.remove(file_path)
-                self._alert_not_found()
-                return
-            if response.ok:
-                with open(file_path, 'w', encoding='UTF-8') as f:
-                    f.write(response.text)
-            else:
-                raise Exception("that's not ok, check it out")
-
-        with open(file_path, 'r') as f:
-            html = f.read()
-
-        return Soup(html, 'html.parser')
+        html = self.get_html_code(request_data, file_path)
+        if html is not None:
+            return Soup(html, 'html.parser')
 
 
 class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
@@ -85,7 +61,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
                 self.__request_data['params']['page'] = str(i)
 
             file_path = f'{dir_with_pages}page_{i + 1}.txt'
-            souped_page = self._get_souped_page(self.__request_data, file_path)
+            souped_page = self.get_souped_page(self.__request_data, file_path)
             if not souped_page:
                 break
 
@@ -105,4 +81,3 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
         self.update_last_searched_text(searched_text)
 
         return vacancies
-
