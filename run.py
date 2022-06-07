@@ -2,7 +2,7 @@ from pprint import pprint
 
 import const
 from search_services.hh.search_service import HeadHunterSearchService
-from search_services.hh.request_consts import URL, HEADERS, PARAMS
+from search_services.request_consts import HH_REQUEST_CONST
 from mongo.services import DAOVacancies, DAOSearchedText
 
 
@@ -12,7 +12,7 @@ def main():
     text = searched_text.strip()
     file_prefix_name = text.replace(' ', '_')
 
-    search_object = HeadHunterSearchService(URL, HEADERS, PARAMS)
+    search_object = HeadHunterSearchService(**HH_REQUEST_CONST)
 
     vacancies_list = search_object.make_fully_hh_search(text)
     last_searched_data = search_object.get_last_searched_text()
