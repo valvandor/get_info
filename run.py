@@ -3,6 +3,7 @@ from pprint import pprint
 import const
 from search_services.hh.search_service import HeadHunterSearchService
 from search_services.request_consts import HH_REQUEST_CONST
+from search_services.storing_const import SEARCHED_TEXT_KEY
 from mongo.services import DAOVacancies, DAOSearchedText
 
 
@@ -14,14 +15,14 @@ def main():
 
     search_object = HeadHunterSearchService(**HH_REQUEST_CONST)
 
-    vacancies_list = search_object.make_fully_hh_search(text)
+    vacancies_list = search_object.make_hh_searching(text)
     last_searched_data = search_object.get_last_searched_text()
 
     vacancies_collection = DAOVacancies(f'collection_{file_prefix_name}_vacancies')
     repeated_vacancies = []
     if last_searched_data and vacancies_list:
-        searched_text_collection = DAOSearchedText(const.SEARCHED_COLLECTION)
-        searched_text_collection.use_index(const.SEARCHED_TEXT_KEY, unique=True)
+        searched_text_collection = DAOSearchedText(const.SEARCHED_TEXTS_COLLECTION)
+        searched_text_collection.use_index(SEARCHED_TEXT_KEY, unique=True)
         is_new_search = searched_text_collection.insert(last_searched_data)
         if is_new_search:
             vacancies_collection.use_index(const.LINK, unique=True)
