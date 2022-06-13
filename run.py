@@ -38,7 +38,7 @@ def main():
         if updated_indexes:
             print(f'Some vacancies was updated, on indexes {updated_indexes}')
         if inserted_indexes:
-            print(f'Some vacancies was updated, on indexes {inserted_indexes}')
+            print(f'Some vacancies was inserted, on indexes {inserted_indexes}')
 
     else:
         if vacancies_collection.is_empty():
