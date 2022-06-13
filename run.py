@@ -15,10 +15,10 @@ def main():
     file_prefix_name = text.replace(' ', '_')
 
     search_object = HeadHunterSearchService(**HH_REQUEST_CONST)
-    hh_vacancies = search_object.make_hh_searching(text)
+    hh_vacancies = search_object.make_hh_searching(text, buffered=True)
 
     search_object = SuperJobSearchService(**SJ_REQUEST_CONST)
-    sj_vacancies = search_object.make_sj_searching(text)
+    sj_vacancies = search_object.make_sj_searching(text, buffered=True)
 
     last_searched_data = search_object.get_last_searched_text()
 
