@@ -42,8 +42,8 @@ class SuperJobParseMixin:
         vacancy_name = ''.join(vacancy.xpath(".//a[contains(@target, '_blank')][1]/text()"))
         link_value = self.base_url + ''.join(vacancy.xpath(".//a[contains(@target, '_blank')][1]/@href"))
         city = ''.join(vacancy.xpath(".//span[contains(@class, 'f-test-text-company-item-location')]/text()[1]"))
-        salary = vacancy.xpath(".//span[contains(@class, 'f-test-text-company-item-salary')]")
-        min_salary, max_salary, currency = self.__get_cash_values(salary)
+        salary_values = vacancy.xpath(".//span[contains(@class, 'f-test-text-company-item-salary')]/descendant::text()")
+        min_salary, max_salary, currency = self.__get_cash_values(salary_values)
         return {
             const.ID: str(uuid4()),
             const.VACANCY_NAME: vacancy_name,
@@ -55,6 +55,30 @@ class SuperJobParseMixin:
         }
 
     @staticmethod
-    def __get_cash_values(anchor):
-        # TODO: parse salaries
-        return None, None, None
+    def __get_cash_values(salary_values: List[str]):
+        min_salary, max_salary, currency = None, None, None
+
+        if salary_values[0] == 'от':
+            value = salary_values[2]
+            salary_list = value.split('\xa0')
+            currency = salary_list.pop(-1).replace('.', '')
+            min_salary = int(''.join(salary_list))
+            max_salary = None
+            return min_salary, max_salary, currency
+
+        if salary_values[0] == 'до':
+            value = salary_values[2]
+            salary_list = value.split('\xa0')
+            currency = salary_list.pop(-1).replace('.', '')
+            max_salary = int(''.join(salary_list))
+            min_salary = None
+
+        if len(salary_values) == 9:
+            salary_list = ''.join(salary_values).split('\xa0')
+            currency = salary_list.pop(-1).split('/')[0].replace('.', '')
+            salaries = ''.join(salary_list).split('—')
+            min_salary = int(salaries[0])
+            max_salary = int(salaries[1])
+
+        return min_salary, max_salary, currency
+
