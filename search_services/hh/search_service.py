@@ -3,7 +3,7 @@ import time
 from bs4 import BeautifulSoup as Soup
 from typing import List
 
-from search_services import BaseSearch
+from search_services import BaseSearch, request_consts
 from search_services.hh.soup_parsing import HeadHunterParseMixin
 
 
@@ -43,17 +43,17 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
             vacancies on pages or None
         """
         vacancies = []
-        i = 0
+        i = 1
         while True:
             time.sleep(1)
+            self._request_data[request_consts.PARAMS]['page'] = i
             souped_page = self._get_souped_page(self._request_data)
             if not souped_page:
                 break
 
-            new_vacancies = self.get_vacancies_on_page(souped_page)
-            vacancies += new_vacancies
+            vacancies += self.get_vacancies_on_page(souped_page)
 
-            if not self.has_next_page(souped_page) or not new_vacancies:
+            if not self.has_next_page(souped_page):
                 break
             i += 1
             print('.', end='')
