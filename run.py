@@ -36,7 +36,8 @@ def main():
         if updated_indexes:
             print(f'Some vacancies was updated, on indexes {updated_indexes}')
     else:
-        vacancies_collection.drop()
+        if vacancies_collection.is_empty():
+            vacancies_collection.drop()
 
     if vacancies_collection.is_exist():
         filters = {
