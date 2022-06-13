@@ -40,7 +40,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
         Gets all vacancies
 
         Returns:
-            vacancies on current page or None
+            vacancies on pages or None
         """
         vacancies = []
         i = 0
@@ -59,25 +59,26 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
             print('.', end='')
         return vacancies
 
-    def make_hh_searching(self, searched_text: str) -> List[dict] or None:
+    def make_hh_searching(self, searched_text: str, buffered: bool = False) -> List[dict] or None:
         """
-        Parse and store data in json files with buffering
+        Parse and store data in json files
 
         Params:
-            folder_name — suffix for directory name, default hh_pages
+            searched_text: searched text
+            buffered: is need to save to json file
         Returns:
             list with vacancies or None
         """
-        print('Parsing and storing from HeadHunter')
+        print(f'Parsing{" and storing" if buffered else ""} from HeadHunter')
         self._request_data['params']['text'] = searched_text
 
         vacancies = self._get_vacancies()
 
         if not vacancies:
             print(f'There are no vacancies for the searched text "{searched_text}"')
-            return
-
-        self._make_json_file(vacancies, searched_text.replace(' ', '_') + '_' + self.service_name)
-        self._update_last_searched_text(searched_text.strip())
+        else:
+            if buffered:
+                self._make_json_file(vacancies, searched_text.replace(' ', '_') + '_' + self.service_name)
+            self._update_last_searched_text(searched_text.strip())
 
         return vacancies

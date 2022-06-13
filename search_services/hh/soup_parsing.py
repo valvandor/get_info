@@ -12,20 +12,21 @@ class HeadHunterParseMixin:
     """
 
     @staticmethod
-    def _has_next_page(souped_page: Soup) -> bool:
+    def has_next_page(souped_page: Soup) -> bool:
         """
         Checks if the current page is the latest
         """
-        return not souped_page.find('a', attrs={'data-qa': 'pager-next'}) is None
+        last_page_element = souped_page.find('a', attrs={'data-qa': 'pager-next'})
+        return last_page_element is not None
 
-    def _get_vacancies_on_page(self, souped_page: Soup) -> List[dict]:
+    def get_vacancies_on_page(self, souped_page: Soup) -> List[dict] or None:
         """
         Parses vacancies on page to separate containers
 
         Params: souped_page — parsing page
 
         Returns:
-            list with described vacancies
+            list with described vacancies if they are exist
         """
         main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
         try:
