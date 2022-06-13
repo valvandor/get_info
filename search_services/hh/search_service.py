@@ -3,7 +3,7 @@ import time
 from bs4 import BeautifulSoup as Soup
 from typing import List
 
-from search_services import BaseSearch
+from search_services import BaseSearch, request_consts
 from search_services.hh.soup_parsing import HeadHunterParseMixin
 
 
@@ -16,8 +16,8 @@ class BaseSoupedSearch(BaseSearch):
         """
         Makes BeautifulSoup object on html code
 
-        Params:
-            request_data — dict with data for requesting with keys url, headers and params
+        Args:
+            request_data: dict with data for requesting with keys url, headers and params
 
         Returns:
             None if no html code else BeautifulSoup object
@@ -43,29 +43,29 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
             vacancies on pages or None
         """
         vacancies = []
-        i = 0
+        i = 1
         while True:
             time.sleep(1)
+            self._request_data[request_consts.PARAMS]['page'] = i
             souped_page = self._get_souped_page(self._request_data)
             if not souped_page:
                 break
 
-            new_vacancies = self.get_vacancies_on_page(souped_page)
-            vacancies += new_vacancies
+            vacancies += self.get_vacancies_on_page(souped_page)
 
-            if not self.has_next_page(souped_page) or not new_vacancies:
+            if not self.has_next_page(souped_page):
                 break
             i += 1
             print('.', end='')
-        return vacancies
+        return vacancies if vacancies else None
 
     def make_hh_searching(self, searched_text: str, buffered: bool = False) -> List[dict] or None:
         """
-        Parse and store data in json files
+        Parse and store data in json files if buffered is True
 
-        Params:
+        Args:
             searched_text: searched text
-            buffered: is need to save to json file
+            buffered: neediness to save to json file, default False
         Returns:
             list with vacancies or None
         """
@@ -74,7 +74,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
 
         vacancies = self._get_vacancies()
 
-        if not vacancies:
+        if vacancies is None:
             print(f'There are no vacancies for the searched text "{searched_text}"')
         else:
             if buffered:
