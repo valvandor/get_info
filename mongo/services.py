@@ -61,7 +61,7 @@ class DAOVacancies(DAODefaultObject):
         Returns:
             list of indexes which was updated in data or None if there are not updated items
             """
-        print('Trying to update or insert new')
+        print('Trying to update exist or insert new')
         updated_indexes = []
         inserted_indexes = []
         for i, item in enumerate(data):
