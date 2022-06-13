@@ -51,9 +51,11 @@ class DAODefaultObject:
             self.__remove_id_from_object(exist)
         self.__remove_id_from_object(obj)
         if obj == exist:
-            return False
+            return None
+        if not exist:
+            upsert = True
         self._collection.replace_one({key: obj[key]}, obj, upsert=upsert)
-        return True
+        return False if upsert else True
 
     def get_by_filter(self, filters):
         objects_cursor = self._collection.find({**filters}, {'_id': False})

@@ -1,7 +1,7 @@
 """
 This module provide for Vacancy object model
 """
-from typing import List
+from typing import List, Tuple
 
 from pymongo.errors import DuplicateKeyError
 
@@ -50,7 +50,7 @@ class DAOVacancies(DAODefaultObject):
         print()
         return repeated_index_list if repeated_index_list else False
 
-    def update_many_by_field(self, data: List[dict], search_key: str) -> List[int] or None:
+    def update_many_by_field(self, data: List[dict], search_key: str) -> Tuple[List[int]] or Tuple[None]:
         """
         Updates vacancies by search_key if possible
 
@@ -61,14 +61,21 @@ class DAOVacancies(DAODefaultObject):
         Returns:
             list of indexes which was updated in data or None if there are not updated items
             """
-        print('Trying to update')
+        print('Trying to update or insert new')
         updated_indexes = []
+        inserted_indexes = []
         for i, item in enumerate(data):
             is_update = self._update_by_field(item, search_key)
+            if is_update is None:
+                continue
             if is_update:
                 updated_indexes.append(i)
-        if updated_indexes:
-            return updated_indexes
+            else:
+                inserted_indexes.append(i)
+        updated_indexes = updated_indexes if updated_indexes else None
+        inserted_indexes = inserted_indexes if inserted_indexes else None
+
+        return updated_indexes, inserted_indexes
 
     def get_vacancies_over_salary(self, value: int, filters: dict) -> List[dict]:
         picked_filters = {}
