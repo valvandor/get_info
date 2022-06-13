@@ -17,3 +17,14 @@ HH_REQUEST_CONST = {
         'L_save_area': 'true',
     }
 }
+
+SJ_REQUEST_CONST = {
+    URL: 'https://russia.superjob.ru/vacancy/search/',
+
+    HEADERS: {
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0'
+    },
+
+    PARAMS: {
+    }
+}
