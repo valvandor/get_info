@@ -19,21 +19,19 @@ class HeadHunterParseMixin:
         last_page_element = souped_page.find('a', attrs={'data-qa': 'pager-next'})
         return last_page_element is not None
 
-    def get_vacancies_on_page(self, souped_page: Soup) -> List[dict] or None:
+    def get_vacancies_on_page(self, souped_page: Soup) -> List[dict]:
         """
         Parses vacancies on page to separate containers
 
         Params: souped_page — parsing page
 
         Returns:
-            list with described vacancies if they are exist
+            list with described vacancies
         """
         main_content = souped_page.find('div', attrs={'id': "a11y-main-content"})
-        try:
-            vacancies_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
-            return [self.__parse_hh_vacancy(anchor) for anchor in vacancies_anchors]
-        except AttributeError:
-            return
+        vacancies_anchors = main_content.findAll('div', {'class': ['vacancy-serp-item-body__main-info']})
+
+        return [self.__parse_hh_vacancy(anchor) for anchor in vacancies_anchors]
 
     def __parse_hh_vacancy(self, anchor: Soup) -> dict:
         """
