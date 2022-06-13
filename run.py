@@ -32,9 +32,14 @@ def main():
                                       if i in unsuccessful_indexes]
         else:
             repeated_vacancies = vacancies_list
-        updated_indexes = vacancies_collection.update_many_by_field(repeated_vacancies, const.LINK)
+        updated_indexes, inserted_indexes = vacancies_collection.update_many_by_field(repeated_vacancies, const.LINK)
+        if updated_indexes is None and inserted_indexes is None:
+            print('Nothing has been updated or inserted')
         if updated_indexes:
             print(f'Some vacancies was updated, on indexes {updated_indexes}')
+        if inserted_indexes:
+            print(f'Some vacancies was updated, on indexes {inserted_indexes}')
+
     else:
         if vacancies_collection.is_empty():
             vacancies_collection.drop()
