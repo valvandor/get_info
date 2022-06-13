@@ -16,8 +16,8 @@ class BaseSoupedSearch(BaseSearch):
         """
         Makes BeautifulSoup object on html code
 
-        Params:
-            request_data — dict with data for requesting with keys url, headers and params
+        Args:
+            request_data: dict with data for requesting with keys url, headers and params
 
         Returns:
             None if no html code else BeautifulSoup object
@@ -61,11 +61,11 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
 
     def make_hh_searching(self, searched_text: str, buffered: bool = False) -> List[dict] or None:
         """
-        Parse and store data in json files
+        Parse and store data in json files if buffered is True
 
-        Params:
+        Args:
             searched_text: searched text
-            buffered: is need to save to json file
+            buffered: neediness to save to json file, default False
         Returns:
             list with vacancies or None
         """
