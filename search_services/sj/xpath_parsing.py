@@ -14,7 +14,7 @@ class SuperJobParseMixin:
         """
 
         next_page_element = lxml_page.xpath("//a[contains(@class, 'f-test-button-dalshe')]")
-        return next_page_element is not None
+        return next_page_element != []
 
     def get_vacancies_on_page(self, lxml_page: HtmlElement) -> List[dict]:
         """
