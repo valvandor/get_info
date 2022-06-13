@@ -38,12 +38,13 @@ class HeadHunterParseMixin:
     def __parse_hh_vacancy(self, anchor: Soup) -> dict:
         """
         Parses values for selected fields: vacancy name, link, city, min/max salary and currency
-        Params:
-            anchor — souped object represented vacancies container
+
+        Args:
+            anchor: souped object represented vacancies container
         Raise:
             TypeError if city is not define
         Returns:
-            list with described vacancy
+            described vacancy
         """
         link_anchor = anchor.find('a', attrs={'class': ['bloko-link']})
         link_value = link_anchor['href']
