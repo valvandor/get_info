@@ -57,7 +57,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
                 break
             i += 1
             print('.', end='')
-        return vacancies
+        return vacancies if vacancies else None
 
     def make_hh_searching(self, searched_text: str, buffered: bool = False) -> List[dict] or None:
         """
@@ -74,7 +74,7 @@ class HeadHunterSearchService(HeadHunterParseMixin, BaseSoupedSearch):
 
         vacancies = self._get_vacancies()
 
-        if not vacancies:
+        if vacancies is None:
             print(f'There are no vacancies for the searched text "{searched_text}"')
         else:
             if buffered:
