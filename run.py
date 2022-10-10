@@ -2,7 +2,8 @@ from pprint import pprint
 
 import const
 from search_services.hh.search_service import HeadHunterSearchService
-from search_services.request_consts import HH_REQUEST_CONST
+from search_services.request_consts import HH_REQUEST_CONST, SJ_REQUEST_CONST
+from search_services.sj.search_service import SuperJobSearchService
 from search_services.storing_const import SEARCHED_TEXT_KEY
 from mongo.services import DAOVacancies, DAOSearchedText
 
@@ -14,9 +15,14 @@ def main():
     file_prefix_name = text.replace(' ', '_')
 
     search_object = HeadHunterSearchService(**HH_REQUEST_CONST)
+    hh_vacancies = search_object.make_hh_searching(text, buffered=True)
 
-    vacancies_list = search_object.make_hh_searching(text)
+    search_object = SuperJobSearchService(**SJ_REQUEST_CONST)
+    sj_vacancies = search_object.make_sj_searching(text, buffered=True)
+
     last_searched_data = search_object.get_last_searched_text()
+
+    vacancies_list = hh_vacancies + sj_vacancies
 
     vacancies_collection = DAOVacancies(f'collection_{file_prefix_name}_vacancies')
     repeated_vacancies = []
